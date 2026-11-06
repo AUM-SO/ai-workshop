@@ -4,6 +4,7 @@
 
 - Product plan: [docs/PRODUCT_PLAN.md](docs/PRODUCT_PLAN.md)
 - Roadmap: [docs/ROADMAP.md](docs/ROADMAP.md)
+- User stories (accounts and onboarding): [docs/USER_STORIES.md](docs/USER_STORIES.md)
 - Branching: [docs/DEVELOP_FLOW.md](docs/DEVELOP_FLOW.md)
 
 ## Tech stack
