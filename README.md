@@ -14,13 +14,28 @@
 
 ## Getting started
 
+Requires Node 22 and Docker (for the local Supabase stack).
+
 ```bash
 npm install
-cp .env.example .env.local   # then fill in the Supabase values
+npx supabase start            # local Postgres + Auth + Storage, applies supabase/migrations
+npx supabase status -o env    # copy API_URL and PUBLISHABLE_KEY into .env.local
+cp .env.example .env.local
 npm run dev
 ```
 
 Open http://localhost:3000.
+
+## Database
+
+- Migrations live in `supabase/migrations/`. Create one with `npx supabase migration new <name>`.
+- Reset the local DB (re-run all migrations): `npx supabase db reset`.
+- Every table has Row Level Security. Published dorms are public; owners manage only their own data.
+
+## CI and deploy
+
+- GitHub Actions (`.github/workflows/ci.yml`) runs lint, typecheck and build on every PR to `develop` and `main`.
+- Preview deploys: import the repo in Vercel and set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and `NEXT_PUBLIC_SITE_URL`. Every PR then gets a preview URL.
 
 ## Scripts
 
