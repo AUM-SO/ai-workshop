@@ -95,7 +95,7 @@ export function LiveRoomGridPreview() {
   return (
     <div
       ref={rootRef}
-      className="flex w-full flex-col gap-5 rounded-3xl border border-border-button-default bg-background-primary-default p-5 shadow-xs sm:p-6"
+      className="flex w-full flex-col gap-5 rounded-3xl border border-border-button-default bg-background-primary-default p-5 sm:p-6"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col gap-0.5">

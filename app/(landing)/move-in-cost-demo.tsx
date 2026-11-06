@@ -19,7 +19,7 @@ export function MoveInCostDemo() {
   return (
     <div
       data-analytics="landing_cost_demo_change"
-      className="flex flex-col gap-5 rounded-3xl border border-border-button-default bg-background-primary-default p-5 sm:p-6"
+      className="flex flex-col gap-5 rounded-3xl border border-border-button-default bg-background-primary-default p-5 shadow-md sm:p-6"
     >
       <div className="grid gap-4 sm:grid-cols-3">
         <NumberField

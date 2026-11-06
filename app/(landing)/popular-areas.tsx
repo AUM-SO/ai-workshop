@@ -14,7 +14,7 @@ function AreaLinks({ names }: { names: readonly string[] }) {
           <Link
             href={`/search?q=${encodeURIComponent(name)}`}
             data-analytics="landing_area_click"
-            className="inline-flex rounded-full border border-border-button-default bg-background-primary-default px-4 py-2 text-body-medium text-text-primary outline-none transition-[translate,background-color,border-color] duration-200 ease-out hover:border-border-button-hover motion-safe:hover:-translate-y-0.5 hover:bg-background-secondary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+            className="inline-flex rounded-full border border-border-button-default bg-background-primary-default px-4 py-2 text-body-medium text-text-primary shadow-xs outline-none transition-[translate,background-color,border-color,box-shadow] duration-200 ease-out hover:border-border-button-hover hover:shadow-md motion-safe:hover:-translate-y-0.5 hover:bg-background-secondary-hover focus-visible:ring-2 focus-visible:ring-border-focus-ring"
           >
             {name}
           </Link>
@@ -26,7 +26,7 @@ function AreaLinks({ names }: { names: readonly string[] }) {
 
 function AreaPhoto({ src, alt }: { src: StaticImageData; alt: string }) {
   return (
-    <div className="group relative aspect-[2/1] overflow-hidden rounded-3xl bg-background-tertiary-default">
+    <div className="group relative aspect-[2/1] overflow-hidden rounded-3xl bg-background-tertiary-default shadow-md">
       <Image
         src={src}
         alt={alt}
