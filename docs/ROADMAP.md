@@ -41,6 +41,8 @@
 
 **Done เมื่อ:** owner สร้างหอ ใส่รูป ห้อง และ publish ได้ครบ
 
+**สถานะ (6 พ.ย. 2026):** เสร็จแล้ว ทำใน branch `feature/dorm-create`, `feature/dorm-photos`, `feature/room-types`, `feature/rooms` (รวม rooms-bulk กับ live-room-map-owner) และ `feature/owner-dashboard` ส่วนการอัปเดตผังห้องแบบ realtime ให้ผู้เช่าเห็น ย้ายไปทำพร้อม `feature/live-room-map-public` ใน Phase 2
+
 ## Phase 2 – Tenant: ค้นหา + ดูหอ
 
 เป้าหมาย: คนทั่วไปค้นหาเจอและเห็นข้อมูลที่ตัดสินใจได้
