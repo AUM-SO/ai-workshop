@@ -19,7 +19,8 @@ export function SiteHeader() {
           <ButtonLink href="/search" variant="ghost" size="small">
             ค้นหาหอพัก
           </ButtonLink>
-          <ButtonLink href="/owner" variant="ghost" size="small">
+          {/* Explains the owner offer first; signed-in owners reach /owner from the account menu. */}
+          <ButtonLink href="/?for=owner#owners" variant="ghost" size="small">
             สำหรับเจ้าของหอ
           </ButtonLink>
         </nav>
