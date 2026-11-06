@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { cx } from "@/utils/cx";
 
 export type RoomStatus = "vacant" | "held" | "occupied" | "maintenance";
@@ -47,12 +48,20 @@ interface RoomGridProps {
   floors: RoomFloor[];
   /** Accessible name. Defaults to a count of rooms per status. */
   label?: string;
+  /**
+   * Pop the cells in on mount, and pop a cell again when its status changes.
+   * Needs the `.room-cell-animated` keyframes from the landing styles.
+   */
+  animated?: boolean;
+  /** Room number that just changed; it pops without the entrance stagger. */
+  changedNo?: string;
   className?: string;
 }
 
 /** Floor-by-floor room map. Read-only; the owner's editable version builds on the same cells. */
-export function RoomGrid({ floors, label, className }: RoomGridProps) {
+export function RoomGrid({ floors, label, animated = false, changedNo, className }: RoomGridProps) {
   const counts = countRooms(floors);
+  let cellIndex = 0;
 
   return (
     <div className={cx("flex flex-col gap-4", className)}>
@@ -63,10 +72,14 @@ export function RoomGrid({ floors, label, className }: RoomGridProps) {
             <div className="grid flex-1 grid-cols-6 gap-1.5">
               {rooms.map((room) => (
                 <span
-                  key={room.no}
+                  // Keyed on status too, so an animated cell remounts and replays its pop when it changes.
+                  key={animated ? `${room.no}-${room.status}` : room.no}
+                  data-changed={animated && room.no === changedNo ? "" : undefined}
+                  style={animated ? ({ "--i": cellIndex++ } as CSSProperties) : undefined}
                   className={cx(
-                    "flex h-10 items-center justify-center rounded-lg text-caption-1-semibold tabular-nums",
+                    "flex h-10 items-center justify-center rounded-lg text-caption-1-semibold tabular-nums transition-colors duration-500",
                     ROOM_STATUS_STYLE[room.status],
+                    animated && "room-cell-animated",
                   )}
                 >
                   {room.no}

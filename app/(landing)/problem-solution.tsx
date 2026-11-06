@@ -1,5 +1,5 @@
 import { RiCheckboxCircleLine } from "@remixicon/react";
-import { LandingSection } from "./section";
+import { LandingSection, revealDelay } from "./section";
 
 const ITEMS = [
   {
@@ -20,9 +20,11 @@ export function ProblemSolution() {
   return (
     <LandingSection id="why" title="หาหอเองเหนื่อยตรงไหน DormDee แก้ให้">
       <ul className="grid gap-4 md:grid-cols-3">
-        {ITEMS.map(({ problem, solution }) => (
+        {ITEMS.map(({ problem, solution }, index) => (
           <li
             key={problem}
+            data-reveal
+            style={revealDelay(index)}
             className="flex flex-col gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
           >
             <p className="text-body-regular text-text-tertiary line-through decoration-text-placeholder">{problem}</p>
