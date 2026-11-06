@@ -27,6 +27,7 @@ const FEATURES: Feature[] = [
     icon: RiChat3Line,
     title: "จองผ่านแชท",
     description: "คุยกับเจ้าของหอ แล้วส่งคำขอจองพร้อมวันเข้าอยู่ได้ในแชทเดียว",
+    comingSoon: true,
   },
   {
     icon: RiWallet3Line,

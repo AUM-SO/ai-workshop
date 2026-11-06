@@ -1,6 +1,6 @@
-import { cacheLife } from "next/cache";
-import { createClient } from "@supabase/supabase-js";
-import { supabaseEnv } from "@/lib/supabase/env";
+import { cacheLife, cacheTag } from "next/cache";
+import { DORMS_TAG } from "@/lib/dorms/public";
+import { createAnonClient } from "@/lib/supabase/anon";
 
 /** Below this many published dorms the numbers look empty, so the section stays hidden. */
 const MIN_PUBLISHED_DORMS = 20;
@@ -13,12 +13,12 @@ interface Stats {
 
 async function getStats(): Promise<Stats | null> {
   "use cache";
+  cacheTag(DORMS_TAG);
   cacheLife("hours");
 
   try {
-    const { url, key } = supabaseEnv();
-    // A cookie-less anon client: the counts are public, and cached output must not depend on a session.
-    const supabase = createClient(url, key, { auth: { persistSession: false } });
+    // Counts are public; read as an anonymous visitor so the cached output never depends on a session.
+    const supabase = createAnonClient();
 
     const [dorms, rooms] = await Promise.all([
       supabase.from("dorms").select("province").eq("status", "published"),
