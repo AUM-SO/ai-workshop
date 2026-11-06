@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useState } from "react";
+import type { CSSProperties } from "react";
 import { SegmentedControl, SegmentedControlItem } from "@/components/base/segmented-control/segmented-control";
 
 type Audience = "tenant" | "owner";
@@ -45,9 +46,11 @@ export function HowItWorks({ initial = "tenant" }: { initial?: Audience }) {
 
       <ol className="grid gap-4 md:grid-cols-3">
         {STEPS[audience].map(({ title, description }, index) => (
+          // Titles differ between the two audiences, so switching tabs remounts the steps and replays the rise.
           <li
             key={title}
-            className="flex flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
+            style={{ "--rise-delay": `${index * 80}ms` } as CSSProperties}
+            className="landing-rise flex flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
           >
             <span
               aria-hidden

@@ -62,7 +62,10 @@ export function MoveInCostDemo() {
         <div className="flex items-baseline justify-between gap-4 pt-2">
           <dt className="text-headline-semibold text-text-primary">จ่ายวันเข้าอยู่</dt>
           <dd aria-live="polite" className="text-title-1-semibold text-text-primary tabular-nums">
-            {baht.format(advanceTotal + depositTotal)}
+            {/* Keyed on the total so the fade replays each time it changes. */}
+            <span key={advanceTotal + depositTotal} className="inline-block animate-number-fade">
+              {baht.format(advanceTotal + depositTotal)}
+            </span>
           </dd>
         </div>
       </dl>

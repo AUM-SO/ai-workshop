@@ -1,0 +1,70 @@
+/* Landing page motion. Every effect is opt-in through a class or data attribute,
+ * and all of it is switched off for prefers-reduced-motion. */
+
+:root {
+  --landing-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Hero entrance: pure CSS, so it plays before (and without) JavaScript.
+ * Set --rise-delay inline to stagger siblings. */
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.landing-rise {
+  animation: landing-rise 700ms var(--landing-ease) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* Scroll reveal: ScrollReveal marks [data-reveal] elements visible as they enter the viewport.
+ * Content is only hidden when scripting is on, so it never disappears for no-JS visitors. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+      opacity 700ms var(--landing-ease),
+      transform 700ms var(--landing-ease);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal][data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Room cells pop in once, staggered by --i; a cell whose status changes remounts and pops again at once. */
+@keyframes room-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.room-cell-animated {
+  animation: room-pop 520ms var(--landing-ease) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 250ms);
+}
+.room-cell-animated[data-changed] {
+  animation-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-rise,
+  .room-cell-animated {
+    animation: none;
+  }
+}

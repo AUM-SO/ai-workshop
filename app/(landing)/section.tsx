@@ -1,5 +1,10 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cx } from "@/utils/cx";
+
+/** Inline style that staggers list items for ScrollReveal: 80ms apart, capped so long lists do not drag. */
+export function revealDelay(index: number) {
+  return { "--reveal-delay": `${Math.min(index, 5) * 80}ms` } as CSSProperties;
+}
 
 interface LandingSectionProps {
   /** Anchor id; the heading gets `${id}-title`. */
@@ -18,7 +23,7 @@ export function LandingSection({ id, title, description, children, className }: 
       aria-labelledby={`${id}-title`}
       className={cx("mx-auto flex w-full max-w-6xl scroll-mt-20 flex-col gap-8 px-4 py-12 sm:py-16", className)}
     >
-      <div className="flex max-w-2xl flex-col gap-3">
+      <div data-reveal className="flex max-w-2xl flex-col gap-3">
         <h2 id={`${id}-title`} className="text-title-1-semibold text-text-primary sm:text-display-4-semibold">
           {title}
         </h2>

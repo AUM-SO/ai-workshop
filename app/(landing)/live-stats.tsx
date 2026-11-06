@@ -52,7 +52,7 @@ export async function LiveStats() {
 
   return (
     <section aria-label="ตัวเลขบน DormDee" className="mx-auto w-full max-w-6xl px-4">
-      <dl className="grid grid-cols-3 divide-x divide-separator-border rounded-3xl border border-border-button-default bg-background-primary-default py-6">
+      <dl data-reveal className="grid grid-cols-3 divide-x divide-separator-border rounded-3xl border border-border-button-default bg-background-primary-default py-6">
         {items.map(({ value, label }) => (
           <div key={label} className="flex flex-col-reverse items-center gap-1 px-2 text-center">
             <dt className="text-body-regular text-text-secondary">{label}</dt>

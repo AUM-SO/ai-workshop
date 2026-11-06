@@ -8,7 +8,7 @@ import {
   RiWallet3Line,
 } from "@remixicon/react";
 import { MoveInCostDemo } from "./move-in-cost-demo";
-import { ComingSoon, LandingSection } from "./section";
+import { ComingSoon, LandingSection, revealDelay } from "./section";
 
 interface Feature {
   icon: RemixiconComponentType;
@@ -61,24 +61,24 @@ export function TenantFeatures() {
       description="ไม่ต้องทักถามทีละหอ ข้อมูลที่ใช้ตัดสินใจอยู่ในหน้าเดียว"
     >
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {FEATURES.map(({ icon: Icon, title, description, comingSoon }) => (
-          <li
-            key={title}
-            className="flex flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
-          >
-            <div className="flex items-center justify-between gap-2">
-              <span className="flex size-10 items-center justify-center rounded-xl bg-background-secondary-default">
-                <Icon className="size-5 text-foreground-icon-primary" aria-hidden />
-              </span>
-              {comingSoon ? <ComingSoon /> : null}
+        {FEATURES.map(({ icon: Icon, title, description, comingSoon }, index) => (
+          // The reveal animates the <li>; the hover lift lives on the card inside, so the two never fight.
+          <li key={title} data-reveal style={revealDelay(index)}>
+            <div className="group flex h-full flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6 transition-[translate,box-shadow,border-color] duration-300 ease-out hover:border-border-button-hover hover:shadow-sm motion-safe:hover:-translate-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-background-secondary-default transition-[scale,background-color] duration-300 ease-out group-hover:bg-background-secondary-hover motion-safe:group-hover:scale-110">
+                  <Icon className="size-5 text-foreground-icon-primary" aria-hidden />
+                </span>
+                {comingSoon ? <ComingSoon /> : null}
+              </div>
+              <h3 className="text-headline-semibold text-text-primary">{title}</h3>
+              <p className="text-body-regular text-text-secondary">{description}</p>
             </div>
-            <h3 className="text-headline-semibold text-text-primary">{title}</h3>
-            <p className="text-body-regular text-text-secondary">{description}</p>
           </li>
         ))}
       </ul>
 
-      <div className="grid items-center gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
+      <div data-reveal className="grid items-center gap-6 lg:grid-cols-[1fr_1.4fr] lg:gap-12">
         <div className="flex flex-col gap-2">
           <h3 className="text-title-2-semibold text-text-primary">ลองคำนวณค่าเข้าอยู่</h3>
           <p className="text-body-regular text-text-secondary">

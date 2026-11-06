@@ -10,6 +10,8 @@ import { OwnerSection } from "./(landing)/owner-section";
 import { PopularAreas } from "./(landing)/popular-areas";
 import { ProblemSolution } from "./(landing)/problem-solution";
 import { Safety } from "./(landing)/safety";
+import { ScrollReveal } from "./(landing)/scroll-reveal";
+import "./(landing)/landing.css";
 import { LandingSection } from "./(landing)/section";
 import { TenantFeatures } from "./(landing)/tenant-features";
 
@@ -35,17 +37,23 @@ export default function Home({ searchParams }: PageProps<"/">) {
       <TenantFeatures />
       <LandingSection id="how-it-works" title="ใช้งานยังไง">
         {/* `?for=owner` is request data, so only this block streams; the rest of the page stays static. */}
-        <Suspense fallback={<HowItWorks />}>
-          <HowItWorksFromUrl searchParams={searchParams} />
-        </Suspense>
+        {/* The reveal sits on a static wrapper, since the streamed block replaces its fallback. */}
+        <div data-reveal>
+          <Suspense fallback={<HowItWorks />}>
+            <HowItWorksFromUrl searchParams={searchParams} />
+          </Suspense>
+        </div>
       </LandingSection>
       <OwnerSection />
       <PopularAreas />
       <Safety />
       <LandingSection id="faq" title="คำถามที่พบบ่อย">
-        <FaqList />
+        <div data-reveal>
+          <FaqList />
+        </div>
       </LandingSection>
       <FinalCta />
+      <ScrollReveal />
     </>
   );
 }

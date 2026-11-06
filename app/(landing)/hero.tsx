@@ -1,9 +1,13 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { SearchField } from "@/components/base/search-field/search-field";
-import { RoomGridPreview } from "./room-grid-preview";
+import { LiveRoomGridPreview } from "./room-grid-preview";
+
+/** Staggers the hero entrance (see .landing-rise in landing.css). */
+const rise = (ms: number) => ({ "--rise-delay": `${ms}ms` }) as CSSProperties;
 
 export function Hero() {
   return (
@@ -12,13 +16,22 @@ export function Hero() {
       className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 pt-10 pb-12 sm:pt-16 sm:pb-16 lg:grid-cols-[1.1fr_1fr] lg:gap-16"
     >
       <div className="flex flex-col items-start gap-6">
-        <Chip color="blue" variant="caption">
+        <Chip color="blue" variant="caption" className="landing-rise gap-1.5" style={rise(0)}>
+          {/* Live dot: a steady core with a ring that pings outward. */}
+          <span aria-hidden className="relative flex size-1.5">
+            <span className="absolute inline-flex size-full rounded-full bg-status-blue-text opacity-60 motion-safe:animate-ping" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-status-blue-text" />
+          </span>
           ห้องว่างอัปเดตแบบ real-time
         </Chip>
-        <h1 id="hero-title" className="text-display-4-semibold text-text-primary sm:text-display-2-semibold">
+        <h1
+          id="hero-title"
+          style={rise(80)}
+          className="landing-rise text-display-4-semibold text-text-primary sm:text-display-2-semibold"
+        >
           หาหอพักที่ว่างจริง และจองได้ทันทีผ่านแชท
         </h1>
-        <p className="max-w-xl text-title-3-regular text-text-secondary">
+        <p style={rise(160)} className="landing-rise max-w-xl text-title-3-regular text-text-secondary">
           ค้นหาหอใกล้มหาวิทยาลัย ที่ทำงาน หรือรถไฟฟ้า เห็นค่าใช้จ่ายทั้งหมดก่อนตัดสินใจ แล้วคุยกับเจ้าของหอโดยตรง
         </p>
 
@@ -28,7 +41,8 @@ export function Hero() {
           method="get"
           role="search"
           data-analytics="landing_search_submit"
-          className="flex w-full max-w-xl flex-col gap-2 sm:flex-row"
+          style={rise(240)}
+          className="landing-rise flex w-full max-w-xl flex-col gap-2 sm:flex-row"
         >
           <SearchField
             name="q"
@@ -43,14 +57,20 @@ export function Hero() {
         <Link
           href="/signup?role=owner"
           data-analytics="landing_owner_cta_click"
-          className="inline-flex items-center gap-1 rounded-md text-body-medium text-text-secondary outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+          style={rise(320)}
+          className="group landing-rise inline-flex items-center gap-1 rounded-md text-body-medium text-text-secondary outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
         >
           เป็นเจ้าของหอ? ลงประกาศฟรี
-          <RiArrowRightLine className="size-4 rtl:-scale-x-100" aria-hidden />
+          <RiArrowRightLine
+            className="size-4 transition-transform duration-200 group-hover:translate-x-0.5 rtl:-scale-x-100 rtl:group-hover:-translate-x-0.5"
+            aria-hidden
+          />
         </Link>
       </div>
 
-      <RoomGridPreview />
+      <div className="landing-rise" style={rise(200)}>
+        <LiveRoomGridPreview />
+      </div>
     </section>
   );
 }
