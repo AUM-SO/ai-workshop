@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { refreshDorm } from "@/lib/dorms/refresh";
 import { redirect } from "next/navigation";
 import type { z } from "zod";
 import { requireOwner, getOwnedDorm } from "@/lib/dorms/owner";
@@ -77,8 +78,7 @@ export async function updateDormStep(
     .eq("id", dormId);
   if (error) return { error: "บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง" };
 
-  revalidatePath(`/owner/dorms/${dormId}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dormId);
   if (formData.get("intent") === "continue") {
     const next = NEXT_STEP[step];
     redirect(next === "photos" ? `/owner/dorms/${dormId}/photos` : `/owner/dorms/${dormId}/info?step=${next}`);
@@ -101,8 +101,7 @@ export async function setDormStatus(dormId: string, status: "published" | "draft
     const reason = error.message.match(/dorm_not_publishable: (\w+)/)?.[1];
     return { error: (reason && PUBLISH_ERRORS[reason]) || "เปลี่ยนสถานะไม่สำเร็จ ลองใหม่อีกครั้ง" };
   }
-  revalidatePath(`/owner/dorms/${dormId}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dormId);
   return { ok: true };
 }
 
@@ -118,6 +117,6 @@ export async function deleteDorm(dormId: string): Promise<FormState> {
   const { error } = await supabase.from("dorms").delete().eq("id", dorm.id);
   if (error) return { error: "ลบหอไม่สำเร็จ ลองใหม่อีกครั้ง" };
 
-  revalidatePath("/owner");
+  refreshDorm(dorm.id);
   redirect("/owner");
 }

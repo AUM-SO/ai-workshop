@@ -109,6 +109,7 @@ export function LiveRoomGridPreview() {
 
       <RoomGrid
         floors={floors}
+        columns={6}
         animated
         changedNo={event?.no}
         label={`ตัวอย่างผังห้องที่อัปเดตสถานะเอง: ${describeRooms(floors)}`}

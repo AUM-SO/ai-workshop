@@ -2,6 +2,9 @@ import { cache } from "react";
 import { notFound, redirect } from "next/navigation";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
+import { isUuid } from "./owner-ids";
+
+export { isUuid };
 
 /** Signed-in owner (or admin). Tenants are sent to /owner, which explains how to switch. */
 export async function requireOwner(next: string) {
@@ -29,6 +32,3 @@ export const getOwnedDorm = cache(async (dormId: string) => {
   return dorm;
 });
 
-export function isUuid(value: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
-}
