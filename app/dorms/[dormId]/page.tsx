@@ -18,6 +18,7 @@ import { baht } from "@/lib/dorms/costs";
 import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
 import { getPublicDorm, type PublicDorm } from "@/lib/dorms/public";
 import { Gallery } from "./gallery";
+import { DormJsonLd } from "./json-ld";
 import { RoomTypeCard } from "./room-type-card";
 
 const amenityLabel = new Map<string, string>(AMENITIES.map((a) => [a.key, a.label]));
@@ -39,6 +40,14 @@ export async function generateMetadata({ params }: PageProps<"/dorms/[dormId]">)
       .filter(Boolean)
       .join(" · "),
     alternates: { canonical: `/dorms/${dorm.id}` },
+    openGraph: {
+      type: "website",
+      locale: "th_TH",
+      siteName: "DormDee",
+      title: `${dorm.name} | DormDee`,
+      url: `/dorms/${dorm.id}`,
+      images: dorm.cover_url ? [{ url: dorm.cover_url, alt: dorm.name }] : undefined,
+    },
   };
 }
 
@@ -56,7 +65,12 @@ async function DormContent({ params }: PageProps<"/dorms/[dormId]">) {
   const { dormId } = await params;
   const data = await getPublicDorm(dormId);
   if (!data) notFound();
-  return <DormView data={data} />;
+  return (
+    <>
+      <DormJsonLd data={data} />
+      <DormView data={data} />
+    </>
+  );
 }
 
 function DormView({ data }: { data: PublicDorm }) {
