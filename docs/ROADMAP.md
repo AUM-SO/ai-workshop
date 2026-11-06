@@ -58,6 +58,8 @@
 
 **Done เมื่อ:** Guest เปิดเว็บ ค้นหา เห็นห้องว่างจริง และเห็นค่าใช้จ่ายทั้งหมด
 
+**สถานะ (6 พ.ย. 2026):** เสร็จแล้ว ทำใน branch `feature/search-data` (ฟังก์ชัน search_dorms, สถานที่ใกล้เคียง, ข้อมูลตัวอย่าง), `feature/dorm-detail`, `feature/move-in-cost`, `feature/live-room-map-public`, `feature/search` (รวม search-map) และ `feature/seo` ปุ่ม "แชทเพื่อจอง" ในหน้าหอยังเป็น "เร็ว ๆ นี้" จนกว่าจะทำ Phase 3
+
 ## Phase 3 – Chat-to-Book → release v1.0.0 (MVP)
 
 เป้าหมาย: จองห้องผ่านแชทได้จบในระบบ
