@@ -1,9 +1,11 @@
 import type { CSSProperties } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { RiArrowRightLine } from "@remixicon/react";
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { SearchField } from "@/components/base/search-field/search-field";
+import roomPhoto from "@/assets/images/landing/room-bedroom.jpg";
 import { LiveRoomGridPreview } from "./room-grid-preview";
 
 /** Staggers the hero entrance (see .landing-rise in landing.css). */
@@ -68,8 +70,24 @@ export function Hero() {
         </Link>
       </div>
 
-      <div className="landing-rise" style={rise(200)}>
-        <LiveRoomGridPreview />
+      {/* A room photo with the live room map floating over its lower half. */}
+      <div className="landing-rise flex flex-col" style={rise(200)}>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-background-tertiary-default">
+          <Image
+            src={roomPhoto}
+            alt="ห้องพักขนาดเล็กตกแต่งอบอุ่น มีเตียงริมหน้าต่างและต้นไม้แขวน"
+            fill
+            preload
+            placeholder="blur"
+            sizes="(min-width: 1024px) 520px, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="relative -mt-20 px-3 sm:-mt-28 sm:px-6">
+          <div className="rounded-3xl shadow-lg">
+            <LiveRoomGridPreview />
+          </div>
+        </div>
       </div>
     </section>
   );
