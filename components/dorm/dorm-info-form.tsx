@@ -13,6 +13,7 @@ import { LocationPicker } from "@/components/dorm/location-picker";
 import { createDorm, updateDormStep, type DormStep } from "@/app/owner/dorms/actions";
 import { AMENITIES, GENDER_POLICY_LABEL, PROVINCES, type GenderPolicy } from "@/lib/dorms/options";
 import type { FormState } from "@/lib/dorms/schemas";
+import { useHydrated } from "@/lib/use-hydrated";
 
 /** Shows the server's message for a field (React Aria hands it over through Form validationErrors). */
 const serverError = (v: ValidationResult) => v.validationErrors[0];
@@ -47,6 +48,7 @@ export function DormInfoForm({ dormId, step, values = {} }: DormInfoFormProps) {
   const action = dormId ? updateDormStep.bind(null, dormId, step) : createDorm;
   const [state, dispatch, pending] = useActionState<FormState, FormData>(action, {});
   const [, startTransition] = useTransition();
+  const hydrated = useHydrated();
 
   // Submitting through onSubmit (not the form `action` prop) keeps what the owner typed
   // when the server returns errors; React resets uncontrolled forms after an action.
@@ -73,15 +75,15 @@ export function DormInfoForm({ dormId, step, values = {} }: DormInfoFormProps) {
       <div className="flex flex-wrap items-center gap-3 border-t border-separator-border pt-5">
         {dormId ? (
           <>
-            <Button type="submit" name="intent" value="continue" disabled={pending}>
+            <Button type="submit" name="intent" value="continue" disabled={pending || !hydrated}>
               {step === "details" ? "บันทึกและไปเพิ่มรูป" : "บันทึกและไปต่อ"}
             </Button>
-            <Button type="submit" name="intent" value="save" variant="secondary" disabled={pending}>
+            <Button type="submit" name="intent" value="save" variant="secondary" disabled={pending || !hydrated}>
               บันทึก
             </Button>
           </>
         ) : (
-          <Button type="submit" disabled={pending}>
+          <Button type="submit" disabled={pending || !hydrated}>
             สร้างหอและไปต่อ
           </Button>
         )}

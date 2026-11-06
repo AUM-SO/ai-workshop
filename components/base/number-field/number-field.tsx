@@ -88,10 +88,11 @@ export function NumberField({
             trailingAddon={
               hideSteppers ? undefined : (
                 <span className="-my-1 -me-1 flex shrink-0 items-center gap-0.5">
-                  <AriaButton slot="decrement" className={stepper}>
+                  {/* React Aria ships no Thai strings for the steppers, so name them here. */}
+                  <AriaButton slot="decrement" aria-label="ลดค่า" className={stepper}>
                     <RiSubtractLine aria-hidden className="size-4" />
                   </AriaButton>
-                  <AriaButton slot="increment" className={stepper}>
+                  <AriaButton slot="increment" aria-label="เพิ่มค่า" className={stepper}>
                     <RiAddLine aria-hidden className="size-4" />
                   </AriaButton>
                 </span>
