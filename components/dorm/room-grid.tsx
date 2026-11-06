@@ -55,11 +55,13 @@ interface RoomGridProps {
   animated?: boolean;
   /** Room number that just changed; it pops without the entrance stagger. */
   changedNo?: string;
+  /** Fixed number of rooms per row. By default rows fill the width with cells of at least 3rem. */
+  columns?: number;
   className?: string;
 }
 
 /** Floor-by-floor room map. Read-only; the owner's editable version builds on the same cells. */
-export function RoomGrid({ floors, label, animated = false, changedNo, className }: RoomGridProps) {
+export function RoomGrid({ floors, label, animated = false, changedNo, columns, className }: RoomGridProps) {
   const counts = countRooms(floors);
   let cellIndex = 0;
 
@@ -69,7 +71,10 @@ export function RoomGrid({ floors, label, animated = false, changedNo, className
         {floors.map(({ floor, rooms }) => (
           <div key={floor} className="flex items-center gap-3">
             <span className="w-10 shrink-0 text-caption-1-medium text-text-tertiary">ชั้น {floor}</span>
-            <div className="grid flex-1 grid-cols-6 gap-1.5">
+            <div
+              className={cx("grid flex-1 gap-1.5", !columns && "grid-cols-[repeat(auto-fill,minmax(3rem,1fr))]")}
+              style={columns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : undefined}
+            >
               {rooms.map((room) => (
                 <span
                   // Keyed on status too, so an animated cell remounts and replays its pop when it changes.
@@ -100,4 +105,16 @@ export function RoomGrid({ floors, label, animated = false, changedNo, className
       </ul>
     </div>
   );
+}
+
+/** Groups a flat room list into floors (top floor first) with natural room-number order. */
+export function toFloors(rooms: { room_no: string; floor: number; status: RoomStatus }[]): RoomFloor[] {
+  const collator = new Intl.Collator("th", { numeric: true });
+  const byFloor = new Map<number, RoomCell[]>();
+  for (const room of rooms) {
+    byFloor.set(room.floor, [...(byFloor.get(room.floor) ?? []), { no: room.room_no, status: room.status }]);
+  }
+  return [...byFloor.entries()]
+    .sort(([a], [b]) => b - a)
+    .map(([floor, cells]) => ({ floor, rooms: cells.sort((a, b) => collator.compare(a.no, b.no)) }));
 }

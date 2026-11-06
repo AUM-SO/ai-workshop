@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refreshDorm } from "@/lib/dorms/refresh";
 import { redirect } from "next/navigation";
 import { getOwnedDorm, isUuid } from "@/lib/dorms/owner";
 import { fieldErrors, roomTypeSchema, type FormState } from "@/lib/dorms/schemas";
@@ -66,8 +66,7 @@ export async function saveRoomType(
     if (error) return { error: "บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง" };
   }
 
-  revalidatePath(`/owner/dorms/${dorm.id}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dorm.id);
   redirect(`/owner/dorms/${dorm.id}/room-types`);
 }
 
@@ -92,7 +91,6 @@ export async function deleteRoomType(dormId: string, roomTypeId: string): Promis
   const { error } = await supabase.from("room_types").delete().eq("id", roomTypeId).eq("dorm_id", dorm.id);
   if (error) return { error: "ลบไม่สำเร็จ ลองใหม่อีกครั้ง" };
 
-  revalidatePath(`/owner/dorms/${dorm.id}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dorm.id);
   return { ok: true };
 }

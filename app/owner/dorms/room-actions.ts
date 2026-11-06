@@ -1,14 +1,13 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refreshDorm } from "@/lib/dorms/refresh";
 import { getOwnedDorm, isUuid } from "@/lib/dorms/owner";
 import { ROOM_STATUSES, type RoomStatus } from "@/lib/dorms/options";
 import { bulkRoomsSchema, fieldErrors, type FormState } from "@/lib/dorms/schemas";
 import { createClient } from "@/lib/supabase/server";
 
 function revalidate(dormId: string) {
-  revalidatePath(`/owner/dorms/${dormId}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dormId);
 }
 
 const normalise = (roomNo: string) => roomNo.trim().toLowerCase();

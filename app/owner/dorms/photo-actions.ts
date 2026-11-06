@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { refreshDorm } from "@/lib/dorms/refresh";
 import { MAX_PHOTOS } from "@/lib/dorms/options";
 import { getOwnedDorm } from "@/lib/dorms/owner";
 import type { FormState } from "@/lib/dorms/schemas";
@@ -10,8 +10,7 @@ import { createClient } from "@/lib/supabase/server";
 const BUCKET = "dorm-photos";
 
 function revalidate(dormId: string) {
-  revalidatePath(`/owner/dorms/${dormId}`, "layout");
-  revalidatePath("/owner");
+  refreshDorm(dormId);
 }
 
 /** Keeps sort_order 0..n-1 in the given order and the dorm's cover on the first photo. */

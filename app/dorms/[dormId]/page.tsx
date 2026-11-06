@@ -1,0 +1,244 @@
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import {
+  RiCheckLine,
+  RiExternalLinkLine,
+  RiMapPin2Line,
+  RiShieldCheckLine,
+  RiUser3Line,
+} from "@remixicon/react";
+import { Breadcrumb, BreadcrumbItem } from "@/components/base/breadcrumb/breadcrumb";
+import { Button } from "@/components/base/buttons/button";
+import { Chip } from "@/components/base/badges/chip";
+import { LocationMap } from "@/components/dorm/location-map";
+import { RoomGrid, toFloors } from "@/components/dorm/room-grid";
+import { baht } from "@/lib/dorms/costs";
+import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
+import { getPublicDorm, type PublicDorm } from "@/lib/dorms/public";
+import { Gallery } from "./gallery";
+import { RoomTypeCard } from "./room-type-card";
+
+const amenityLabel = new Map<string, string>(AMENITIES.map((a) => [a.key, a.label]));
+
+export async function generateMetadata({ params }: PageProps<"/dorms/[dormId]">): Promise<Metadata> {
+  const { dormId } = await params;
+  const data = await getPublicDorm(dormId);
+  if (!data) return { title: "ไม่พบหอพัก" };
+  const { dorm, roomTypes } = data;
+  const from = roomTypes[0]?.monthly_price;
+  const place = [dorm.district, dorm.province].filter(Boolean).join(", ");
+  return {
+    title: dorm.name,
+    description: [
+      `${dorm.name} ${GENDER_POLICY_LABEL[dorm.gender_policy]} ${place}`,
+      from ? `ค่าเช่าเริ่มต้น ${baht(from)}/เดือน` : null,
+      dorm.description?.slice(0, 120),
+    ]
+      .filter(Boolean)
+      .join(" · "),
+    alternates: { canonical: `/dorms/${dorm.id}` },
+  };
+}
+
+export default function DormPage(props: PageProps<"/dorms/[dormId]">) {
+  return (
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-8 sm:py-10">
+      <Suspense fallback={<div className="h-96" aria-hidden />}>
+        <DormContent {...props} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function DormContent({ params }: PageProps<"/dorms/[dormId]">) {
+  const { dormId } = await params;
+  const data = await getPublicDorm(dormId);
+  if (!data) notFound();
+  return <DormView data={data} />;
+}
+
+function DormView({ data }: { data: PublicDorm }) {
+  const { dorm, photos, roomTypes, rooms, owner } = data;
+  const vacantByType = new Map<string, number>();
+  for (const room of rooms) {
+    if (room.status === "vacant") vacantByType.set(room.room_type_id, (vacantByType.get(room.room_type_id) ?? 0) + 1);
+  }
+  const vacant = rooms.filter((r) => r.status === "vacant").length;
+  const from = roomTypes[0]?.monthly_price;
+  const place = [dorm.district, dorm.province].filter(Boolean).join(", ");
+
+  return (
+    <>
+      <Breadcrumb aria-label="ตำแหน่งหน้า">
+        <BreadcrumbItem href="/search">ค้นหาหอพัก</BreadcrumbItem>
+        {dorm.province ? (
+          <BreadcrumbItem href={`/search?province=${encodeURIComponent(dorm.province)}`}>{dorm.province}</BreadcrumbItem>
+        ) : null}
+        <BreadcrumbItem current>{dorm.name}</BreadcrumbItem>
+      </Breadcrumb>
+
+      <div className="grid gap-8 lg:grid-cols-[1fr_22rem] lg:items-start">
+        <div className="flex min-w-0 flex-col gap-8">
+          <Gallery name={dorm.name} photos={photos} />
+
+          <header className="flex flex-col gap-3">
+            <div className="flex flex-wrap gap-2">
+              <Chip color="blue" variant="caption">
+                {GENDER_POLICY_LABEL[dorm.gender_policy]}
+              </Chip>
+              <Chip color={vacant > 0 ? "lime" : "neutral"} variant="caption">
+                {vacant > 0 ? `ว่าง ${vacant} ห้อง` : "ห้องเต็ม"}
+              </Chip>
+            </div>
+            <h1 className="text-title-1-semibold text-text-primary sm:text-display-4-semibold">{dorm.name}</h1>
+            <p className="flex items-start gap-1.5 text-body-regular text-text-secondary">
+              <RiMapPin2Line className="mt-0.5 size-4 shrink-0 text-foreground-icon-tertiary" aria-hidden />
+              {[dorm.address, place].filter(Boolean).join(" ")}
+            </p>
+          </header>
+
+          {dorm.description ? (
+            <Section id="about" title="รายละเอียด">
+              <p className="text-body-regular whitespace-pre-line text-text-primary">{dorm.description}</p>
+            </Section>
+          ) : null}
+
+          <Section id="room-types" title="ประเภทห้องและราคา">
+            <div className="grid gap-4 md:grid-cols-2">
+              {roomTypes.map((type) => (
+                <RoomTypeCard key={type.id} type={type} vacant={vacantByType.get(type.id) ?? 0} />
+              ))}
+            </div>
+          </Section>
+
+          <Section
+            id="room-map"
+            title="ผังห้อง"
+            description="สถานะห้องมาจากระบบที่เจ้าของหอใช้จัดการหอโดยตรง"
+          >
+            <div className="rounded-3xl border border-border-button-default bg-background-primary-default p-5 shadow-sm">
+              <RoomGrid floors={toFloors(rooms)} label={`ผังห้องของ ${dorm.name}`} />
+            </div>
+          </Section>
+
+          {dorm.amenities.length ? (
+            <Section id="amenities" title="สิ่งอำนวยความสะดวก">
+              <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {dorm.amenities.map((key) => (
+                  <li key={key} className="flex items-center gap-2 text-body-regular text-text-primary">
+                    <RiCheckLine className="size-4 text-status-lime-text" aria-hidden />
+                    {amenityLabel.get(key) ?? key}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          ) : null}
+
+          {dorm.rules ? (
+            <Section id="rules" title="กฎของหอ">
+              <p className="text-body-regular whitespace-pre-line text-text-primary">{dorm.rules}</p>
+            </Section>
+          ) : null}
+
+          <Section id="location" title="ที่ตั้ง">
+            {dorm.nearby.length ? (
+              <ul className="flex flex-wrap gap-2" aria-label="สถานที่ใกล้เคียง">
+                {dorm.nearby.map((placeName) => (
+                  <li key={placeName} className="rounded-full bg-background-tertiary-default px-3 py-1 text-caption-1-medium text-text-secondary">
+                    {placeName}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {dorm.lat != null && dorm.lng != null ? (
+              <>
+                <LocationMap
+                  lat={dorm.lat}
+                  lng={dorm.lng}
+                  label={`แผนที่ตำแหน่งของ ${dorm.name}`}
+                  className="relative z-0 h-80 w-full overflow-hidden rounded-3xl border border-border-button-default bg-background-tertiary-default shadow-sm"
+                />
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${dorm.lat},${dorm.lng}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 self-start rounded-md text-body-medium text-text-secondary outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring"
+                >
+                  เปิดใน Google Maps
+                  <RiExternalLinkLine className="size-4" aria-hidden />
+                </a>
+              </>
+            ) : (
+              <p className="text-body-regular text-text-secondary">เจ้าของหอยังไม่ได้ปักหมุดตำแหน่ง</p>
+            )}
+          </Section>
+        </div>
+
+        <aside className="flex flex-col gap-4 lg:sticky lg:top-24" aria-label="สรุปและติดต่อ">
+          <div className="flex flex-col gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-5 shadow-lg">
+            {from != null ? (
+              <p className="flex items-baseline gap-1">
+                <span className="text-body-regular text-text-secondary">เริ่มต้น</span>
+                <span className="text-title-1-semibold text-text-primary tabular-nums">{baht(from)}</span>
+                <span className="text-body-regular text-text-secondary">/เดือน</span>
+              </p>
+            ) : null}
+            <p className="text-body-regular text-text-secondary">
+              {vacant > 0 ? `ตอนนี้มีห้องว่าง ${vacant} ห้อง จาก ${rooms.length} ห้อง` : "ตอนนี้ห้องเต็มทุกห้อง"}
+            </p>
+            <Button disabled className="w-full">
+              แชทเพื่อจอง (เร็ว ๆ นี้)
+            </Button>
+            <p className="text-caption-1-regular text-text-tertiary">
+              การจองผ่านแชทกำลังจะเปิดให้ใช้ ระหว่างนี้ดูข้อมูลห้องและค่าใช้จ่ายได้ครบในหน้านี้
+            </p>
+          </div>
+
+          <div className="flex items-start gap-3 rounded-3xl bg-background-secondary-default p-4">
+            <RiShieldCheckLine className="mt-0.5 size-5 shrink-0 text-foreground-icon-secondary" aria-hidden />
+            <p className="text-caption-1-regular text-text-secondary">
+              อย่าโอนเงินมัดจำก่อนดูห้องจริง หรือก่อนเจ้าของหอยืนยันการจองในระบบ
+            </p>
+          </div>
+
+          {owner ? (
+            <div className="flex items-center gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-4 shadow-sm">
+              <span className="flex size-10 items-center justify-center rounded-full bg-background-tertiary-default">
+                <RiUser3Line className="size-5 text-foreground-icon-secondary" aria-hidden />
+              </span>
+              <span className="flex flex-col">
+                <span className="text-caption-1-regular text-text-tertiary">เจ้าของหอ</span>
+                <span className="text-body-medium text-text-primary">{owner.display_name ?? "เจ้าของหอ"}</span>
+              </span>
+            </div>
+          ) : null}
+        </aside>
+      </div>
+    </>
+  );
+}
+
+function Section({
+  id,
+  title,
+  description,
+  children,
+}: {
+  id: string;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section id={id} aria-labelledby={`${id}-title`} className="flex scroll-mt-24 flex-col gap-4">
+      <div className="flex flex-col gap-1">
+        <h2 id={`${id}-title`} className="text-title-2-semibold text-text-primary">
+          {title}
+        </h2>
+        {description ? <p className="text-body-regular text-text-secondary">{description}</p> : null}
+      </div>
+      {children}
+    </section>
+  );
+}
