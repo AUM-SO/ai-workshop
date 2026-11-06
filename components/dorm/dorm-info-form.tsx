@@ -28,6 +28,7 @@ export interface DormInfoValues {
   lat: number | null;
   lng: number | null;
   amenities: string[];
+  nearby: string[];
   rules: string | null;
 }
 
@@ -199,6 +200,14 @@ function DetailsFields({ values }: { values: Partial<DormInfoValues> }) {
           </>
         )}
       </CheckboxGroup>
+      <Input
+        name="nearby"
+        label="สถานที่ใกล้เคียง"
+        placeholder="เช่น จุฬาลงกรณ์มหาวิทยาลัย, MRT สามย่าน"
+        hint="คั่นแต่ละที่ด้วยจุลภาค ผู้เช่าค้นหาหอจากชื่อสถานที่เหล่านี้ได้"
+        defaultValue={(values.nearby ?? []).join(", ")}
+        errorMessage={serverError}
+      />
       <Textarea
         name="rules"
         label="กฎของหอ"

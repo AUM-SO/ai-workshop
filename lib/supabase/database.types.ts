@@ -45,14 +45,14 @@ isOneToOne: false
                   ]
                 },"dorms": {
                   Row: {
-                    "address": string | null,"amenities": (string)[],"cover_url": string | null,"created_at": string,"description": string | null,"district": string | null,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number | null,"lng": number | null,"name": string,"owner_id": string,"province": string | null,"rules": string | null,"status": Database["public"]['Enums']["dorm_status"],"updated_at": string
+                    "address": string | null,"amenities": (string)[],"cover_url": string | null,"created_at": string,"description": string | null,"district": string | null,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number | null,"lng": number | null,"name": string,"nearby": (string)[],"owner_id": string,"province": string | null,"rules": string | null,"status": Database["public"]['Enums']["dorm_status"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"owner_id": string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
+                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"nearby"?: (string)[],"owner_id": string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
                   }
                   Update: {
-                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"owner_id"?: string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
+                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"nearby"?: (string)[],"owner_id"?: string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -137,6 +137,11 @@ isOneToOne: false
                            },
 "owns_dorm":
 { Args: { "target_dorm_id": string }; Returns: boolean
+                           },
+"search_dorms":
+{ Args: { "amenity_filter"?: (string)[],"bbox"?: (number)[],"gender_filter"?: Database["public"]['Enums']["gender_policy"],"page_offset"?: number,"page_size"?: number,"price_max"?: number,"price_min"?: number,"province_filter"?: string,"q"?: string,"sort"?: string,"vacant_only"?: boolean }; Returns: {
+              "amenities": (string)[],"cover_url": string,"district": string,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number,"lng": number,"max_price": number,"min_price": number,"name": string,"nearby": (string)[],"province": string,"total_count": number,"total_rooms": number,"updated_at": string,"vacant_rooms": number
+            }[]
                            }
           }
           Enums: {

@@ -28,7 +28,11 @@ function readStep(step: DormStep, formData: FormData) {
   const schemas = { general: dormGeneralSchema, location: dormLocationSchema, details: dormDetailsSchema };
   const raw =
     step === "details"
-      ? { amenities: formData.getAll("amenities").map(String), rules: String(formData.get("rules") ?? "") }
+      ? {
+          amenities: formData.getAll("amenities").map(String),
+          nearby: String(formData.get("nearby") ?? ""),
+          rules: String(formData.get("rules") ?? ""),
+        }
       : Object.fromEntries([...formData.entries()].filter(([key]) => !key.startsWith("$")).map(([k, v]) => [k, String(v)]));
   return (schemas[step] as z.ZodType).safeParse(raw);
 }
