@@ -1,54 +1,51 @@
-import { RiChat3Line, RiLayoutGridLine, RiWallet3Line } from "@remixicon/react";
-import { ButtonLink } from "@/components/base/buttons/button";
+import { Suspense } from "react";
+import type { Metadata } from "next";
+import { FaqList } from "./(landing)/faq";
+import { FinalCta } from "./(landing)/final-cta";
+import { Hero } from "./(landing)/hero";
+import { HowItWorks, HowItWorksFromUrl } from "./(landing)/how-it-works";
+import { LandingJsonLd } from "./(landing)/json-ld";
+import { LiveStats } from "./(landing)/live-stats";
+import { OwnerSection } from "./(landing)/owner-section";
+import { PopularAreas } from "./(landing)/popular-areas";
+import { ProblemSolution } from "./(landing)/problem-solution";
+import { Safety } from "./(landing)/safety";
+import { LandingSection } from "./(landing)/section";
+import { TenantFeatures } from "./(landing)/tenant-features";
 
-const highlights = [
-  {
-    icon: RiLayoutGridLine,
-    title: "ห้องว่างจริง",
-    description: "ผังห้องอัปเดตแบบ real-time ไม่มีประกาศค้าง",
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "th_TH",
+    siteName: "DormDee",
+    title: "DormDee – หาหอพัก ห้องว่างจริง จองผ่านแชท",
+    description:
+      "ค้นหาหอพักและอพาร์ตเมนต์ เห็นห้องว่างจริงแบบ real-time ค่าใช้จ่ายโปร่งใส และจองกับเจ้าของหอได้ทันทีผ่านแชท",
   },
-  {
-    icon: RiChat3Line,
-    title: "จองผ่านแชท",
-    description: "คุยกับเจ้าของหอและส่งคำขอจองได้ในที่เดียว",
-  },
-  {
-    icon: RiWallet3Line,
-    title: "ค่าใช้จ่ายโปร่งใส",
-    description: "เห็นเงินที่ต้องจ่ายวันเข้าอยู่และค่าน้ำค่าไฟก่อนตัดสินใจ",
-  },
-];
+};
 
-export default function Home() {
+export default function Home({ searchParams }: PageProps<"/">) {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-12 px-4 py-16">
-      <section className="flex flex-col items-start gap-6">
-        <h1 className="max-w-2xl text-title-1-medium text-text-primary">
-          หาหอพักที่ว่างจริง และจองได้ทันทีผ่านแชท
-        </h1>
-        <p className="max-w-xl text-body-regular text-text-secondary">
-          ค้นหาหอใกล้มหาวิทยาลัย ที่ทำงาน หรือรถไฟฟ้า เปรียบเทียบค่าใช้จ่ายทั้งหมด แล้วคุยกับเจ้าของหอโดยตรง
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <ButtonLink href="/search">ค้นหาหอพัก</ButtonLink>
-          <ButtonLink href="/signup?role=owner" variant="secondary">
-            ลงประกาศหอพักฟรี
-          </ButtonLink>
-        </div>
-      </section>
-
-      <section className="grid gap-4 sm:grid-cols-3">
-        {highlights.map(({ icon: Icon, title, description }) => (
-          <div
-            key={title}
-            className="flex flex-col gap-2 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
-          >
-            <Icon className="size-6 text-foreground-icon-primary" aria-hidden />
-            <h2 className="text-headline-semibold text-text-primary">{title}</h2>
-            <p className="text-body-regular text-text-secondary">{description}</p>
-          </div>
-        ))}
-      </section>
-    </div>
+    <>
+      <LandingJsonLd />
+      <Hero />
+      <LiveStats />
+      <ProblemSolution />
+      <TenantFeatures />
+      <LandingSection id="how-it-works" title="ใช้งานยังไง">
+        {/* `?for=owner` is request data, so only this block streams; the rest of the page stays static. */}
+        <Suspense fallback={<HowItWorks />}>
+          <HowItWorksFromUrl searchParams={searchParams} />
+        </Suspense>
+      </LandingSection>
+      <OwnerSection />
+      <PopularAreas />
+      <Safety />
+      <LandingSection id="faq" title="คำถามที่พบบ่อย">
+        <FaqList />
+      </LandingSection>
+      <FinalCta />
+    </>
   );
 }
