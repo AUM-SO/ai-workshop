@@ -64,7 +64,7 @@ export function TenantFeatures() {
         {FEATURES.map(({ icon: Icon, title, description, comingSoon }, index) => (
           // The reveal animates the <li>; the hover lift lives on the card inside, so the two never fight.
           <li key={title} data-reveal style={revealDelay(index)}>
-            <div className="group flex h-full flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6 transition-[translate,box-shadow,border-color] duration-300 ease-out hover:border-border-button-hover hover:shadow-sm motion-safe:hover:-translate-y-1">
+            <div className="group flex h-full flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6 shadow-sm transition-[translate,box-shadow,border-color] duration-300 ease-out hover:border-border-button-hover hover:shadow-lg motion-safe:hover:-translate-y-1">
               <div className="flex items-center justify-between gap-2">
                 <span className="flex size-10 items-center justify-center rounded-xl bg-background-secondary-default transition-[scale,background-color] duration-300 ease-out group-hover:bg-background-secondary-hover motion-safe:group-hover:scale-110">
                   <Icon className="size-5 text-foreground-icon-primary" aria-hidden />

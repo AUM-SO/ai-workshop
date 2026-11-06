@@ -72,7 +72,7 @@ export function Hero() {
 
       {/* A room photo with the live room map floating over its lower half. */}
       <div className="landing-rise flex flex-col" style={rise(200)}>
-        <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-background-tertiary-default">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-background-tertiary-default shadow-lg">
           <Image
             src={roomPhoto}
             alt="ห้องพักขนาดเล็กตกแต่งอบอุ่น มีเตียงริมหน้าต่างและต้นไม้แขวน"
@@ -84,7 +84,7 @@ export function Hero() {
           />
         </div>
         <div className="relative -mt-20 px-3 sm:-mt-28 sm:px-6">
-          <div className="rounded-3xl shadow-lg">
+          <div className="rounded-3xl shadow-xl">
             <LiveRoomGridPreview />
           </div>
         </div>

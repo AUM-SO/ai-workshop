@@ -25,7 +25,7 @@ export function ProblemSolution() {
             key={problem}
             data-reveal
             style={revealDelay(index)}
-            className="flex flex-col gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
+            className="flex flex-col gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-6 shadow-sm"
           >
             <p className="text-body-regular text-text-tertiary line-through decoration-text-placeholder">{problem}</p>
             <p className="flex gap-2 text-headline-medium text-text-primary">

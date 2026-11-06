@@ -50,7 +50,7 @@ export function HowItWorks({ initial = "tenant" }: { initial?: Audience }) {
           <li
             key={title}
             style={{ "--rise-delay": `${index * 80}ms` } as CSSProperties}
-            className="landing-rise flex flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6"
+            className="landing-rise flex flex-col gap-3 rounded-3xl border border-border-button-default bg-background-primary-default p-6 shadow-sm"
           >
             <span
               aria-hidden

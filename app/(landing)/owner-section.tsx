@@ -41,7 +41,7 @@ export function OwnerSection() {
     >
       <div
         data-reveal
-        className="grid gap-8 overflow-hidden rounded-3xl border border-border-button-default bg-background-secondary-default lg:grid-cols-[0.9fr_1.1fr] lg:gap-0"
+        className="grid gap-8 overflow-hidden rounded-3xl shadow-xl border border-border-button-default bg-background-secondary-default lg:grid-cols-[0.9fr_1.1fr] lg:gap-0"
       >
         <div className="relative aspect-[16/9] lg:aspect-auto lg:min-h-full">
           <Image
@@ -54,7 +54,7 @@ export function OwnerSection() {
           />
         </div>
 
-        <div className="flex flex-col gap-8 px-6 pb-6 sm:px-8 sm:pb-8 lg:p-10">
+        <div className="flex flex-col gap-8 bg-background-primary-default px-6 pb-6 sm:px-8 sm:pb-8 lg:p-10">
           <div className="flex flex-col items-start gap-4">
             <p className="text-title-3-regular text-text-secondary">
               เลิกตอบคำถามเดิมซ้ำ ๆ และจดห้องว่างในสมุด

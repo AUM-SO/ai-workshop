@@ -32,7 +32,7 @@ export function Safety() {
     <LandingSection id="safety" title="เช่าอย่างปลอดภัย">
       <ul className="grid gap-4 md:grid-cols-3">
         {TIPS.map(({ icon: Icon, title, description, comingSoon }, index) => (
-          <li key={title} data-reveal style={revealDelay(index)} className="flex gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-6">
+          <li key={title} data-reveal style={revealDelay(index)} className="flex gap-4 rounded-3xl border border-border-button-default bg-background-primary-default p-6 shadow-sm">
             <Icon className="size-6 shrink-0 text-foreground-icon-primary" aria-hidden />
             <div className="flex flex-col gap-2">
               <h3 className="flex flex-wrap items-center gap-2 text-headline-semibold text-text-primary">
