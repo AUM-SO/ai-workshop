@@ -32,7 +32,7 @@ Open http://localhost:3000.
 - Migrations live in `supabase/migrations/`. Create one with `npx supabase migration new <name>`.
 - Apply new migrations to a running stack: `npx supabase migration up`. Reset everything (migrations + seed): `npx supabase db reset`.
 - After a schema change, regenerate the TypeScript types: `npm run db:types`.
-- `supabase/seed.sql` creates two local accounts for testing (an owner and a tenant); the passwords are in that file.
+- `supabase/seed.sql` creates two local accounts for testing (an owner and a tenant; the passwords are in that file) and seven published sample dorms, with photos in `public/seed`.
 - Every table has Row Level Security. Published dorms are public; owners manage only their own data.
 
 ## CI and deploy
