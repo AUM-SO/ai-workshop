@@ -38,3 +38,19 @@ export function parseOtherFees(value: unknown): OtherFee[] {
       : [];
   });
 }
+
+export interface UtilityRates {
+  water_rate: number | null;
+  water_flat: number | null;
+  electric_rate: number | null;
+}
+
+/** Thailand's provincial electricity rate, roughly, for dorms that bill at cost. */
+export const UTILITY_ELECTRIC_FALLBACK = 4.5;
+
+/** Estimated monthly bill: rent, fixed monthly fees, water and electricity for the given usage. */
+export function monthlyEstimate(costs: RoomTypeCosts & UtilityRates, waterUnits: number, electricUnits: number) {
+  const water = costs.water_flat ?? (costs.water_rate ?? 0) * waterUnits;
+  const electric = (costs.electric_rate ?? UTILITY_ELECTRIC_FALLBACK) * electricUnits;
+  return { fixed: fixedMonthly(costs), water, electric, total: fixedMonthly(costs) + water + electric };
+}

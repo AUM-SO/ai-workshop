@@ -12,6 +12,7 @@ import { Breadcrumb, BreadcrumbItem } from "@/components/base/breadcrumb/breadcr
 import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { LocationMap } from "@/components/dorm/location-map";
+import { MoveInCostCalculator } from "@/components/dorm/move-in-cost-calculator";
 import { RoomGrid, toFloors } from "@/components/dorm/room-grid";
 import { baht } from "@/lib/dorms/costs";
 import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
@@ -111,6 +112,12 @@ function DormView({ data }: { data: PublicDorm }) {
               ))}
             </div>
           </Section>
+
+          {roomTypes.length ? (
+            <Section id="costs" title="คำนวณค่าใช้จ่าย" description="เงินที่ต้องเตรียมวันเข้าอยู่ และค่าใช้จ่ายรายเดือนรวมค่าน้ำค่าไฟ">
+              <MoveInCostCalculator roomTypes={roomTypes} />
+            </Section>
+          ) : null}
 
           <Section
             id="room-map"
