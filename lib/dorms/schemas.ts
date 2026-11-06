@@ -31,6 +31,11 @@ export const dormLocationSchema = z
 
 export const dormDetailsSchema = z.object({
   amenities: z.array(z.enum(AMENITY_KEYS)).default([]),
+  // Typed as one comma-separated line; stored as a list for search.
+  nearby: z
+    .string()
+    .transform((v) => [...new Set(v.split(/[,，\n]/).map((p) => p.trim()).filter(Boolean))])
+    .pipe(z.array(z.string().max(60, "ชื่อสถานที่ยาวได้ไม่เกิน 60 ตัวอักษร")).max(15, "ใส่ได้ไม่เกิน 15 สถานที่")),
   rules: optionalText(2000, "กฎหอยาวได้ไม่เกิน 2,000 ตัวอักษร"),
 });
 
