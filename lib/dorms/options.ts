@@ -68,3 +68,6 @@ export const PROVINCES = [
 ] as const;
 
 export const ROOM_STATUSES: RoomStatus[] = ["vacant", "held", "occupied", "maintenance"];
+
+/** Photos per dorm. */
+export const MAX_PHOTOS = 20;
