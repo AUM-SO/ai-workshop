@@ -13,7 +13,7 @@ import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
 import { LocationMap } from "@/components/dorm/location-map";
 import { MoveInCostCalculator } from "@/components/dorm/move-in-cost-calculator";
-import { RoomGrid, toFloors } from "@/components/dorm/room-grid";
+import { LiveRoomMap } from "@/components/dorm/live-room-map";
 import { baht } from "@/lib/dorms/costs";
 import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
 import { getPublicDorm, type PublicDorm } from "@/lib/dorms/public";
@@ -125,7 +125,7 @@ function DormView({ data }: { data: PublicDorm }) {
             description="สถานะห้องมาจากระบบที่เจ้าของหอใช้จัดการหอโดยตรง"
           >
             <div className="rounded-3xl border border-border-button-default bg-background-primary-default p-5 shadow-sm">
-              <RoomGrid floors={toFloors(rooms)} label={`ผังห้องของ ${dorm.name}`} />
+              <LiveRoomMap dormId={dorm.id} dormName={dorm.name} initialRooms={rooms} />
             </div>
           </Section>
 

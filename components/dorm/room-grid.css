@@ -1,0 +1,30 @@
+/* Room map motion: cells pop in once, staggered by --i; a cell whose status changes
+ * remounts (RoomGrid keys it on status) and pops again at once. */
+
+@keyframes room-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.room-cell-animated {
+  animation: room-pop 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 40ms + 250ms);
+}
+.room-cell-animated[data-changed] {
+  animation-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-cell-animated {
+    animation: none;
+  }
+}

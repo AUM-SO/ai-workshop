@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { cx } from "@/utils/cx";
+import "./room-grid.css";
 
 export type RoomStatus = "vacant" | "held" | "occupied" | "maintenance";
 
@@ -50,7 +51,6 @@ interface RoomGridProps {
   label?: string;
   /**
    * Pop the cells in on mount, and pop a cell again when its status changes.
-   * Needs the `.room-cell-animated` keyframes from the landing styles.
    */
   animated?: boolean;
   /** Room number that just changed; it pops without the entrance stagger. */
