@@ -111,25 +111,25 @@ export interface AuthCardProps {
 
 const COPY = {
   signin: {
-    title: "Welcome back",
-    description: "Sign in to pick up where you left off.",
-    cta: "Sign in",
-    switchLead: "New here?",
-    switchAction: "Create an account",
+    title: "ยินดีต้อนรับกลับ",
+    description: "เข้าสู่ระบบเพื่อดำเนินการต่อ",
+    cta: "เข้าสู่ระบบ",
+    switchLead: "ยังไม่มีบัญชี?",
+    switchAction: "สมัครสมาชิก",
   },
   signup: {
-    title: "Create your account",
-    description: "Start building with BoardUI in a couple of minutes.",
-    cta: "Create account",
-    switchLead: "Already have an account?",
-    switchAction: "Sign in",
+    title: "สร้างบัญชี",
+    description: "สมัครฟรี ใช้เวลาไม่ถึงนาที",
+    cta: "สมัครสมาชิก",
+    switchLead: "มีบัญชีอยู่แล้ว?",
+    switchAction: "เข้าสู่ระบบ",
   },
   verify: {
-    title: "Check your inbox",
-    description: "Enter the code we sent to finish signing in.",
-    cta: "Verify and continue",
-    switchLead: "Code not arriving?",
-    switchAction: "Send a new one",
+    title: "ตรวจสอบอีเมลของคุณ",
+    description: "กรอกรหัสที่ส่งไปทางอีเมลเพื่อเข้าสู่ระบบ",
+    cta: "ยืนยันและดำเนินการต่อ",
+    switchLead: "ยังไม่ได้รับรหัส?",
+    switchAction: "ส่งรหัสใหม่",
   },
 } as const;
 
@@ -189,10 +189,10 @@ export function AuthCard({
           // `iconOnly` fixes a square width; the grid needs it to stretch,
           // and `className` is last into `cx` so it wins.
           className={layout === "grid" ? "w-full" : undefined}
-          aria-label={layout !== "stacked" ? `Continue with ${SOCIAL_PROVIDERS[provider].label}` : undefined}
+          aria-label={layout !== "stacked" ? `ดำเนินการต่อด้วย ${SOCIAL_PROVIDERS[provider].label}` : undefined}
           onClick={() => onProvider?.(provider)}
         >
-          {`Continue with ${SOCIAL_PROVIDERS[provider].label}`}
+          {`ดำเนินการต่อด้วย ${SOCIAL_PROVIDERS[provider].label}`}
         </SocialButton>
       ))}
     </div>
@@ -226,9 +226,9 @@ export function AuthCard({
           {description ??
             (verify && email ? (
               <>
-                Enter the code we sent to{" "}
+                กรอกรหัสที่ส่งไปที่{" "}
                 <span className="text-body-medium text-text-primary">{email}</span>{" "}
-                to finish signing in.
+                เพื่อเข้าสู่ระบบ
               </>
             ) : (
               copy.description
@@ -240,7 +240,7 @@ export function AuthCard({
         {verify ? (
           <div className="flex flex-col gap-1.5">
             <span className="text-body-medium text-text-secondary">
-              Verification code
+              รหัสยืนยัน
             </span>
             <InputOtp
               value={code}
@@ -248,24 +248,24 @@ export function AuthCard({
               onComplete={onComplete}
               length={codeLength}
               groupEvery={codeLength % 2 === 0 ? codeLength / 2 : undefined}
-              aria-label="Verification code"
+              aria-label="รหัสยืนยัน"
               className="justify-start"
             />
           </div>
         ) : null}
 
         {signup && !confirmPassword ? (
-          <Input name="name" label="Full name" placeholder="Ada Lovelace" isRequired />
+          <Input name="name" label="ชื่อที่แสดง" placeholder="สมชาย ใจดี" isRequired />
         ) : null}
 
         {verify ? null : (
         <Input
           name="email"
           type="email"
-          label="Email"
-          placeholder="you@company.com"
+          label="อีเมล"
+          placeholder="you@example.com"
           autoComplete="email"
-          hint={signup ? "We use this to contact you, and never share it." : undefined}
+          hint={signup ? "ใช้ติดต่อคุณเท่านั้น ไม่เปิดเผยต่อผู้อื่น" : undefined}
           isRequired
         />
         )}
@@ -278,16 +278,16 @@ export function AuthCard({
             <Input
               name="password"
               type="password"
-              label="Password"
-              placeholder="At least 8 characters"
+              label="รหัสผ่าน"
+              placeholder="อย่างน้อย 8 ตัวอักษร"
               autoComplete="new-password"
               isRequired
             />
             <Input
               name="confirmPassword"
               type="password"
-              label="Confirm password"
-              placeholder="Repeat your password"
+              label="ยืนยันรหัสผ่าน"
+              placeholder="กรอกรหัสผ่านอีกครั้ง"
               autoComplete="new-password"
               isRequired
             />
@@ -296,8 +296,8 @@ export function AuthCard({
           <Input
             name="password"
             type="password"
-            label="Password"
-            placeholder={signup ? "At least 8 characters" : "Enter your password"}
+            label="รหัสผ่าน"
+            placeholder={signup ? "อย่างน้อย 8 ตัวอักษร" : "กรอกรหัสผ่าน"}
             autoComplete={signup ? "new-password" : "current-password"}
             isRequired
           />
@@ -306,9 +306,9 @@ export function AuthCard({
         {signup || verify ? null : (
           <div className="flex items-center justify-between">
             <Checkbox size="sm" isSelected={remember} onChange={setRemember}>
-              Remember me
+              จดจำฉันไว้
             </Checkbox>
-            <LinkButton href="#">Forgot password?</LinkButton>
+            <LinkButton href="#">ลืมรหัสผ่าน?</LinkButton>
           </div>
         )}
 
@@ -320,7 +320,7 @@ export function AuthCard({
             through `footnote`, so it does not crowd the CTA. */}
         {signup && !footnote ? (
           <p className="text-caption-1-regular text-text-tertiary">
-            By creating an account you agree to our Terms of Service and Privacy Policy.
+            เมื่อสมัครสมาชิก คุณยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว
           </p>
         ) : null}
       </form>
@@ -332,7 +332,7 @@ export function AuthCard({
       {!verify && providers.length > 0 ? (
         <>
           <div className="my-5">
-            <Divider>or continue with</Divider>
+            <Divider>หรือดำเนินการต่อด้วย</Divider>
           </div>
           {social}
         </>
