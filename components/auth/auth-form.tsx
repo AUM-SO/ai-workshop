@@ -5,7 +5,8 @@ import { AuthCard } from "@/components/application/auth/auth-card";
 import { RadioCard } from "@/components/base/radio/radio-card";
 import { RadioGroup } from "@/components/base/radio/radio";
 import { createClient } from "@/lib/supabase/client";
-import { signIn, signUp, type AuthResult } from "@/app/(auth)/actions";
+import { Button } from "@/components/base/buttons/button";
+import { resendVerification, signIn, signUp, type AuthResult } from "@/app/(auth)/actions";
 
 type Role = "tenant" | "owner";
 
@@ -13,11 +14,13 @@ interface AuthFormProps {
   mode: "signin" | "signup";
   next?: string;
   initialRole?: Role;
+  /** Error from a failed Google or email-link callback, shown on arrival. */
+  initialError?: string;
 }
 
-export function AuthForm({ mode, next = "/", initialRole = "tenant" }: AuthFormProps) {
+export function AuthForm({ mode, next = "/", initialRole = "tenant", initialError }: AuthFormProps) {
   const [role, setRole] = useState<Role>(initialRole);
-  const [result, setResult] = useState<AuthResult>({});
+  const [result, setResult] = useState<AuthResult>(initialError ? { error: initialError } : {});
   const [pending, startTransition] = useTransition();
   const signup = mode === "signup";
 
@@ -73,6 +76,20 @@ export function AuthForm({ mode, next = "/", initialRole = "tenant" }: AuthFormP
         {pending ? <p className="text-body-regular text-text-secondary">กำลังดำเนินการ…</p> : null}
         {result.error ? <p className="text-body-regular text-text-error-primary">{result.error}</p> : null}
         {result.notice ? <p className="text-body-regular text-text-primary">{result.notice}</p> : null}
+        {result.resendEmail ? (
+          <Button
+            variant="ghost"
+            size="small"
+            className="mt-2"
+            disabled={pending}
+            onClick={() => {
+              const email = result.resendEmail!;
+              startTransition(async () => setResult(await resendVerification(email)));
+            }}
+          >
+            ส่งลิงก์ยืนยันอีกครั้ง
+          </Button>
+        ) : null}
       </div>
     </div>
   );

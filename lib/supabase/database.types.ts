@@ -439,6 +439,9 @@ isOneToOne: false
 "create_line_link_code":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"delete_my_account":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "distance_km":
 { Args: { "lat1": number,"lat2": number,"lng1": number,"lng2": number }; Returns: number
                            },
