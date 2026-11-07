@@ -8,11 +8,16 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const next = safeNext(searchParams.get("next"));
 
-  if (!code) return NextResponse.redirect(`${origin}/login?error=missing_code`);
+  // A failed password-reset link goes back to the request form with a reason.
+  const failTo = (reason: string) =>
+    next === "/reset-password" ? `${origin}/forgot-password?error=expired` : `${origin}/login?error=${reason}`;
+  const providerError = searchParams.get("error");
+  if (providerError) return NextResponse.redirect(failTo(providerError === "access_denied" ? "access_denied" : "callback"));
+  if (!code) return NextResponse.redirect(failTo("missing_code"));
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error || !data.user) return NextResponse.redirect(`${origin}/login?error=callback`);
+  if (error || !data.user) return NextResponse.redirect(failTo("callback"));
 
   // OAuth sign-ups carry no role metadata, so apply the one picked on /signup.
   if (searchParams.get("role") === "owner") {

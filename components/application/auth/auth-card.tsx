@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
 import { RiMailCheckLine } from "@remixicon/react";
 import { Button } from "@/components/base/buttons/button";
-import { Checkbox } from "@/components/base/checkbox/checkbox";
 import { Divider } from "@/components/base/divider/divider";
 import { Input } from "@/components/base/input/input";
 import { InputOtp } from "@/components/base/input-otp/input-otp";
@@ -156,7 +156,6 @@ export function AuthCard({
 }: AuthCardProps) {
   const localize = useTemplateCopy();
   const TitleHeading = `h${headingLevel}` as const;
-  const [remember, setRemember] = useState(true);
   const [code, setCode] = useState("");
   const copy = COPY[mode];
   const signup = mode === "signup";
@@ -304,11 +303,8 @@ export function AuthCard({
         )}
 
         {signup || verify ? null : (
-          <div className="flex items-center justify-between">
-            <Checkbox size="sm" isSelected={remember} onChange={setRemember}>
-              จดจำฉันไว้
-            </Checkbox>
-            <LinkButton href="#">ลืมรหัสผ่าน?</LinkButton>
+          <div className="flex items-center justify-end">
+            <LinkButton href="/forgot-password">ลืมรหัสผ่าน?</LinkButton>
           </div>
         )}
 
@@ -320,7 +316,14 @@ export function AuthCard({
             through `footnote`, so it does not crowd the CTA. */}
         {signup && !footnote ? (
           <p className="text-caption-1-regular text-text-tertiary">
-            เมื่อสมัครสมาชิก คุณยอมรับข้อกำหนดการใช้งานและนโยบายความเป็นส่วนตัว
+            เมื่อสมัครสมาชิก คุณยอมรับ{" "}
+            <Link href="/terms" className="rounded-sm underline outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+              เงื่อนไขการใช้งาน
+            </Link>{" "}
+            และ{" "}
+            <Link href="/privacy" className="rounded-sm underline outline-none hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+              นโยบายความเป็นส่วนตัว
+            </Link>
           </p>
         ) : null}
       </form>

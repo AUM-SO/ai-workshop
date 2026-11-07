@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { AccountPrivacy } from "@/components/account/account-privacy";
 import { LineConnect } from "@/components/account/line-connect";
 import { requireProfile } from "@/lib/auth";
 import { lineConfig } from "@/lib/line";
@@ -19,6 +20,9 @@ export default function AccountPage() {
       </div>
       <Suspense fallback={null}>
         <LineSection />
+      </Suspense>
+      <Suspense fallback={null}>
+        <PrivacySection />
       </Suspense>
     </div>
   );
@@ -40,6 +44,28 @@ async function LineSection() {
   return (
     <div className="rounded-3xl border border-border-button-default bg-background-primary-default p-6">
       <LineConnect linked={Boolean(data?.line_user_id)} botId={config.botId} />
+    </div>
+  );
+}
+
+async function PrivacySection() {
+  const profile = await requireProfile("/account");
+  const supabase = await createClient();
+  const [{ count: published }, { count: open }] = await Promise.all([
+    supabase.from("dorms").select("id", { count: "exact", head: true }).eq("owner_id", profile.id).eq("status", "published"),
+    supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .or(`owner_id.eq.${profile.id},tenant_id.eq.${profile.id}`)
+      .in("status", ["pending", "held"]),
+  ]);
+  const blockers = [
+    published ? `ปิดประกาศหอที่เผยแพร่อยู่ ${published} หอ (ที่หน้าหอพักของฉัน)` : null,
+    open ? `ปิดหรือยกเลิกคำขอจองที่ยังค้าง ${open} รายการ (ในแชท)` : null,
+  ].filter((b): b is string => Boolean(b));
+  return (
+    <div className="rounded-3xl border border-border-button-default bg-background-primary-default p-6">
+      <AccountPrivacy blockers={blockers} />
     </div>
   );
 }

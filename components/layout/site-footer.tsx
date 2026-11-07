@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cacheLife } from "next/cache";
 import { RiHome4Line } from "@remixicon/react";
+import { ThemeToggle } from "@/components/application/theme/theme-toggle";
 
 const COLUMNS = [
   {
@@ -67,9 +68,13 @@ export function SiteFooter() {
         ))}
       </div>
       <div className="border-t border-separator-border">
-        <p className="mx-auto w-full max-w-6xl px-4 py-6 text-caption-1-regular text-text-tertiary">
-          © <CopyrightYear /> DormDee
-        </p>
+        <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6">
+          <p className="text-caption-1-regular text-text-tertiary">
+            © <CopyrightYear /> DormDee
+          </p>
+          {/* The header shows the theme picker from sm up; small screens get it here. */}
+          <ThemeToggle appearance="segmented" size="small" className="sm:hidden" />
+        </div>
       </div>
     </footer>
   );
