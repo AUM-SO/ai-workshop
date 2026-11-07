@@ -1,10 +1,12 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { RiHome4Line } from "@remixicon/react";
+import { RiChat3Line, RiHome4Line } from "@remixicon/react";
 import { ButtonLink } from "@/components/base/buttons/button";
 import { ThemeToggle } from "@/components/application/theme/theme-toggle";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { UserMenu } from "@/components/layout/user-menu";
 import { getCurrentProfile } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 
 export function SiteHeader() {
   return (
@@ -41,12 +43,19 @@ async function HeaderAccount() {
   const profile = await getCurrentProfile();
 
   if (profile) {
+    const supabase = await createClient();
+    const { data: notifications } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", profile.id)
+      .order("created_at", { ascending: false })
+      .limit(20);
     return (
-      <UserMenu
-        name={profile.display_name || profile.email}
-        role={profile.role}
-        avatarUrl={profile.avatar_url}
-      />
+      <>
+        <ButtonLink href="/chat" variant="ghost" size="small" iconOnly leadingIcon={RiChat3Line} aria-label="แชท" />
+        <NotificationBell userId={profile.id} initial={notifications ?? []} />
+        <UserMenu name={profile.display_name || profile.email} role={profile.role} avatarUrl={profile.avatar_url} />
+      </>
     );
   }
 

@@ -58,7 +58,7 @@
 
 **Done เมื่อ:** Guest เปิดเว็บ ค้นหา เห็นห้องว่างจริง และเห็นค่าใช้จ่ายทั้งหมด
 
-**สถานะ (6 พ.ย. 2026):** เสร็จแล้ว ทำใน branch `feature/search-data` (ฟังก์ชัน search_dorms, สถานที่ใกล้เคียง, ข้อมูลตัวอย่าง), `feature/dorm-detail`, `feature/move-in-cost`, `feature/live-room-map-public`, `feature/search` (รวม search-map) และ `feature/seo` ปุ่ม "แชทเพื่อจอง" ในหน้าหอยังเป็น "เร็ว ๆ นี้" จนกว่าจะทำ Phase 3
+**สถานะ (6 พ.ย. 2026):** เสร็จแล้ว ทำใน branch `feature/search-data` (ฟังก์ชัน search_dorms, สถานที่ใกล้เคียง, ข้อมูลตัวอย่าง), `feature/dorm-detail`, `feature/move-in-cost`, `feature/live-room-map-public`, `feature/search` (รวม search-map) และ `feature/seo` ปุ่มแชทในหน้าหอเปิดใช้แล้วใน Phase 3
 
 ## Phase 3 – Chat-to-Book → release v1.0.0 (MVP)
 
@@ -74,6 +74,8 @@
 | `feature/in-app-notify` | แจ้งเตือนในเว็บ + อีเมล เมื่อมีข้อความ/คำขอจองใหม่ |
 
 **Done เมื่อ:** tenant ขอจอง → owner ยืนยันในแชท → ห้องเปลี่ยนเป็น "ติดจอง" ทันที → ออก **v1.0.0**
+
+**สถานะ (7 พ.ย. 2026):** เสร็จแล้ว ทำใน `feature/chat-schema` (ตาราง, RLS, ฟังก์ชัน `request_booking` / `respond_booking` / `cancel_booking`, cron คืนห้องที่กันไว้เมื่อหมดเวลาทุก 5 นาที, แจ้งเตือนในตาราง `notifications`) และ `feature/chat` (หน้า `/chat`, แชท real-time, การ์ดคำขอจอง, ปุ่มแชท/ขอจองในหน้าหอ, กระดิ่งแจ้งเตือนใน header, คำเตือนเมื่อมีการขอโอนเงินนอกระบบ) ยังไม่ได้ทำ: ส่งรูปในแชท และอีเมลแจ้งเตือน (ย้ายไปทำพร้อม LINE ใน Phase 4)
 
 ## Phase 4 – Trust + Engagement → v1.1.0
 

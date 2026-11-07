@@ -1,4 +1,5 @@
 import { Chip } from "@/components/base/badges/chip";
+import { StartChatButton } from "@/components/chat/start-chat-button";
 import { baht, fixedMonthly, moveInTotal, type OtherFee } from "@/lib/dorms/costs";
 import { FURNITURE } from "@/lib/dorms/options";
 
@@ -19,7 +20,7 @@ export interface RoomTypeSummary {
   totalRooms: number;
 }
 
-export function RoomTypeCard({ type, vacant }: { type: RoomTypeSummary; vacant: number }) {
+export function RoomTypeCard({ dormId, type, vacant }: { dormId: string; type: RoomTypeSummary; vacant: number }) {
   return (
     <article
       aria-labelledby={`type-${type.id}`}
@@ -81,6 +82,11 @@ export function RoomTypeCard({ type, vacant }: { type: RoomTypeSummary; vacant: 
         <p className="text-caption-1-regular text-text-secondary">
           เฟอร์นิเจอร์: {type.furniture.map((key) => furnitureLabel.get(key) ?? key).join(" · ")}
         </p>
+      ) : null}
+      {vacant > 0 ? (
+        <StartChatButton dormId={dormId} roomTypeId={type.id} variant="secondary">
+          ขอจองห้องแบบนี้
+        </StartChatButton>
       ) : null}
     </article>
   );
