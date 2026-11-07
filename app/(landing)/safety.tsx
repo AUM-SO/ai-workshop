@@ -22,7 +22,6 @@ const TIPS: {
     icon: RiStarLine,
     title: "รีวิวจากผู้เช่าจริง",
     description: "รีวิวได้เฉพาะคนที่จองผ่านระบบแล้วเท่านั้น",
-    comingSoon: true,
   },
 ];
 

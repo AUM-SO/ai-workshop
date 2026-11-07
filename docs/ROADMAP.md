@@ -88,6 +88,14 @@
 | `feature/anti-scam` | คำเตือนในแชทเมื่อมีการพูดถึงโอนเงินนอกระบบ, ปุ่มรายงานประกาศ |
 | `feature/admin-panel` | หน้า admin: อนุมัติ verify, จัดการรายงาน |
 
+**สถานะ (8 พ.ย. 2026):** เสร็จแล้วใน `feature/trust` (migration `20261108000000_trust.sql`)
+- แจ้งเตือนเมื่อห้องว่าง: ตาราง `room_type_watches` และ trigger แจ้งครั้งเดียวเมื่อห้องกลับมาว่าง
+- รีวิว: ตาราง `reviews` รีวิวได้ 1 ครั้งต่อ booking ที่ยืนยันแล้ว แสดงคะแนนเฉลี่ยในหน้าหอ
+- รายงานประกาศ: ตาราง `reports` ปุ่มรายงานในหน้าหอ (คำเตือนในแชททำไปแล้วใน Phase 3)
+- ยืนยันตัวตนเจ้าของหอ: หน้า `/owner/verify` เก็บเอกสารใน bucket ส่วนตัว `verification-docs` ใช้ฟังก์ชัน `review_verification` และแสดงป้าย Verified ในหน้าหอ
+- หน้า `/admin`: อนุมัติหรือปฏิเสธการยืนยันตัวตน, จัดการรายงาน, ปิดประกาศ บัญชี admin ในเครื่องคือ `admin@dormdee.test`
+- LINE: เชื่อมบัญชีจากหน้าบัญชีด้วยรหัส 6 หลัก, webhook อยู่ที่ `/api/line/webhook`, ส่งการแจ้งเตือนในเว็บต่อไปที่ LINE หลังมีแชท การจอง หรือห้องว่าง ต้องตั้งค่า `SUPABASE_SECRET_KEY`, `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET` และ `LINE_BOT_BASIC_ID` (ดู `.env.example`) ถ้าไม่ตั้งค่า ส่วน LINE จะถูกซ่อนไว้
+
 ## Phase 5 – Smart features → v1.2.0
 
 | Feature branch | งาน |

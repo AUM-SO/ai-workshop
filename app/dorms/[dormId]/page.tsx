@@ -7,12 +7,14 @@ import {
   RiMapPin2Line,
   RiShieldCheckLine,
   RiUser3Line,
+  RiVerifiedBadgeFill,
 } from "@remixicon/react";
 import { Breadcrumb, BreadcrumbItem } from "@/components/base/breadcrumb/breadcrumb";
 import { Chip } from "@/components/base/badges/chip";
 import { ChatUnavailableNotice, StartChatButton } from "@/components/chat/start-chat-button";
 import { LocationMap } from "@/components/dorm/location-map";
 import { MoveInCostCalculator } from "@/components/dorm/move-in-cost-calculator";
+import { Stars } from "@/components/dorm/stars";
 import { LiveRoomMap } from "@/components/dorm/live-room-map";
 import { baht } from "@/lib/dorms/costs";
 import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
@@ -20,8 +22,10 @@ import { getPublicDorm, type PublicDorm } from "@/lib/dorms/public";
 import { Gallery } from "./gallery";
 import { DormJsonLd } from "./json-ld";
 import { RoomTypeCard } from "./room-type-card";
+import { ReportSlot, ReviewComposer } from "./trust-slots";
 
 const amenityLabel = new Map<string, string>(AMENITIES.map((a) => [a.key, a.label]));
+const reviewDate = new Intl.DateTimeFormat("th-TH", { day: "numeric", month: "short", year: "numeric" });
 
 export async function generateMetadata({ params }: PageProps<"/dorms/[dormId]">): Promise<Metadata> {
   const { dormId } = await params;
@@ -74,7 +78,7 @@ async function DormContent({ params, searchParams }: PageProps<"/dorms/[dormId]"
 }
 
 function DormView({ data, searchParams }: { data: PublicDorm; searchParams: PageProps<"/dorms/[dormId]">["searchParams"] }) {
-  const { dorm, photos, roomTypes, rooms, owner } = data;
+  const { dorm, photos, roomTypes, rooms, owner, reviews, rating } = data;
   const vacantByType = new Map<string, number>();
   for (const room of rooms) {
     if (room.status === "vacant") vacantByType.set(room.room_type_id, (vacantByType.get(room.room_type_id) ?? 0) + 1);
@@ -107,6 +111,13 @@ function DormView({ data, searchParams }: { data: PublicDorm; searchParams: Page
               </Chip>
             </div>
             <h1 className="text-title-1-semibold text-text-primary sm:text-display-4-semibold">{dorm.name}</h1>
+            {rating != null ? (
+              <a href="#reviews" className="flex items-center gap-2 self-start rounded-md text-body-medium text-text-secondary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-border-focus-ring">
+                <Stars value={rating} />
+                <span className="tabular-nums">{rating.toFixed(1)}</span>
+                <span>({reviews.length} รีวิว)</span>
+              </a>
+            ) : null}
             <p className="flex items-start gap-1.5 text-body-regular text-text-secondary">
               <RiMapPin2Line className="mt-0.5 size-4 shrink-0 text-foreground-icon-tertiary" aria-hidden />
               {[dorm.address, place].filter(Boolean).join(" ")}
@@ -161,6 +172,28 @@ function DormView({ data, searchParams }: { data: PublicDorm; searchParams: Page
               <p className="text-body-regular whitespace-pre-line text-text-primary">{dorm.rules}</p>
             </Section>
           ) : null}
+
+          <Section id="reviews" title="รีวิวจากผู้เช่า" description="รีวิวได้เฉพาะคนที่จองห้องผ่าน DormDee และเจ้าของหอยืนยันแล้ว">
+            <Suspense fallback={null}>
+              <ReviewComposer dormId={dorm.id} />
+            </Suspense>
+            {reviews.length ? (
+              <ul className="flex flex-col gap-3">
+                {reviews.map((review) => (
+                  <li key={review.id} className="flex flex-col gap-2 rounded-3xl border border-border-button-default bg-background-primary-default p-4 shadow-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-body-medium text-text-primary">{review.tenantName}</span>
+                      <span className="text-caption-1-regular text-text-tertiary">{reviewDate.format(new Date(review.created_at))}</span>
+                    </div>
+                    <Stars value={review.rating} />
+                    {review.body ? <p className="text-body-regular whitespace-pre-line text-text-primary">{review.body}</p> : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-body-regular text-text-secondary">ยังไม่มีรีวิว</p>
+            )}
+          </Section>
 
           <Section id="location" title="ที่ตั้ง">
             {dorm.nearby.length ? (
@@ -231,8 +264,18 @@ function DormView({ data, searchParams }: { data: PublicDorm; searchParams: Page
                 <span className="text-caption-1-regular text-text-tertiary">เจ้าของหอ</span>
                 <span className="text-body-medium text-text-primary">{owner.display_name ?? "เจ้าของหอ"}</span>
               </span>
+              {owner.verified_at ? (
+                <Chip color="blue" variant="caption" className="ms-auto inline-flex items-center gap-1">
+                  <RiVerifiedBadgeFill className="size-3.5" aria-hidden />
+                  Verified
+                </Chip>
+              ) : null}
             </div>
           ) : null}
+
+          <Suspense fallback={null}>
+            <ReportSlot dormId={dorm.id} />
+          </Suspense>
         </aside>
       </div>
     </>

@@ -145,6 +145,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"line_links": {
+                  Row: {
+                    "created_at": string,"line_user_id": string | null,"link_code": string | null,"linked_at": string | null,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"line_user_id"?: string | null,"link_code"?: string | null,"linked_at"?: string | null,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"line_user_id"?: string | null,"link_code"?: string | null,"linked_at"?: string | null,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "line_links_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"messages": {
                   Row: {
                     "body": string,"booking_id": string | null,"conversation_id": string,"created_at": string,"id": string,"kind": Database["public"]['Enums']["message_kind"],"sender_id": string | null,"via": string | null
@@ -179,19 +199,39 @@ isOneToOne: false
                   ]
                 },"notifications": {
                   Row: {
-                    "body": string | null,"created_at": string,"id": string,"kind": string,"link": string | null,"read_at": string | null,"title": string,"user_id": string
+                    "body": string | null,"created_at": string,"id": string,"kind": string,"line_sent_at": string | null,"link": string | null,"read_at": string | null,"title": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind": string,"link"?: string | null,"read_at"?: string | null,"title": string,"user_id": string
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind": string,"line_sent_at"?: string | null,"link"?: string | null,"read_at"?: string | null,"title": string,"user_id": string
                   }
                   Update: {
-                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind"?: string,"link"?: string | null,"read_at"?: string | null,"title"?: string,"user_id"?: string
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind"?: string,"line_sent_at"?: string | null,"link"?: string | null,"read_at"?: string | null,"title"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
       foreignKeyName: "notifications_user_id_fkey"
       columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"owner_verifications": {
+                  Row: {
+                    "created_at": string,"document_path": string,"id": string,"note": string | null,"owner_id": string,"reviewed_at": string | null,"reviewer_note": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"document_path": string,"id"?: string,"note"?: string | null,"owner_id": string,"reviewed_at"?: string | null,"reviewer_note"?: string | null,"status"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"document_path"?: string,"id"?: string,"note"?: string | null,"owner_id"?: string,"reviewed_at"?: string | null,"reviewer_note"?: string | null,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "owner_verifications_owner_id_fkey"
+      columns: ["owner_id"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -210,6 +250,90 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"reports": {
+                  Row: {
+                    "created_at": string,"details": string | null,"dorm_id": string,"id": string,"reason": string,"reporter_id": string,"resolved_at": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"details"?: string | null,"dorm_id": string,"id"?: string,"reason": string,"reporter_id": string,"resolved_at"?: string | null,"status"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"details"?: string | null,"dorm_id"?: string,"id"?: string,"reason"?: string,"reporter_id"?: string,"resolved_at"?: string | null,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reports_dorm_id_fkey"
+      columns: ["dorm_id"]
+isOneToOne: false
+      referencedRelation: "dorms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reports_reporter_id_fkey"
+      columns: ["reporter_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"reviews": {
+                  Row: {
+                    "body": string | null,"booking_id": string,"created_at": string,"dorm_id": string,"id": string,"rating": number,"tenant_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"booking_id": string,"created_at"?: string,"dorm_id": string,"id"?: string,"rating": number,"tenant_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "body"?: string | null,"booking_id"?: string,"created_at"?: string,"dorm_id"?: string,"id"?: string,"rating"?: number,"tenant_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "reviews_booking_id_fkey"
+      columns: ["booking_id"]
+isOneToOne: true
+      referencedRelation: "bookings"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reviews_dorm_id_fkey"
+      columns: ["dorm_id"]
+isOneToOne: false
+      referencedRelation: "dorms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reviews_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"room_type_watches": {
+                  Row: {
+                    "created_at": string,"room_type_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"room_type_id": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"room_type_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "room_type_watches_room_type_id_fkey"
+      columns: ["room_type_id"]
+isOneToOne: false
+      referencedRelation: "room_types"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "room_type_watches_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"room_types": {
                   Row: {
@@ -269,11 +393,17 @@ isOneToOne: false
 "cancel_booking":
 { Args: { "target_booking_id": string }; Returns: undefined
                            },
+"create_line_link_code":
+{ Args: Record<PropertyKey, never>; Returns: string
+                           },
 "dorm_is_published":
 { Args: { "target_dorm_id": string }; Returns: boolean
                            },
 "expire_booking_holds":
 { Args: Record<PropertyKey, never>; Returns: number
+                           },
+"is_admin":
+{ Args: Record<PropertyKey, never>; Returns: boolean
                            },
 "is_owner":
 { Args: Record<PropertyKey, never>; Returns: boolean
@@ -292,6 +422,9 @@ isOneToOne: false
                            },
 "respond_booking":
 { Args: { "action": string,"hold_hours"?: number,"target_booking_id": string,"target_room_id"?: string }; Returns: undefined
+                           },
+"review_verification":
+{ Args: { "approve": boolean,"message"?: string,"target_id": string }; Returns: undefined
                            },
 "search_dorms":
 { Args: { "amenity_filter"?: (string)[],"bbox"?: (number)[],"gender_filter"?: Database["public"]['Enums']["gender_policy"],"page_offset"?: number,"page_size"?: number,"price_max"?: number,"price_min"?: number,"province_filter"?: string,"q"?: string,"sort"?: string,"vacant_only"?: boolean }; Returns: {

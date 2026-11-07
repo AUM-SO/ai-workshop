@@ -26,3 +26,21 @@ export async function updateProfile(_prev: ProfileResult, formData: FormData): P
   revalidatePath("/", "layout");
   return { saved: true };
 }
+
+/** A fresh 6-character code to send to the LINE bot. */
+export async function createLineCode(): Promise<{ code?: string; error?: string }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("create_line_link_code");
+  return error || !data ? { error: "สร้างรหัสไม่สำเร็จ ลองใหม่อีกครั้ง" } : { code: data };
+}
+
+export async function unlinkLine(): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "กรุณาเข้าสู่ระบบ" };
+  const { error } = await supabase.from("line_links").delete().eq("user_id", user.id);
+  revalidatePath("/account");
+  return error ? { error: "ยกเลิกไม่สำเร็จ" } : {};
+}

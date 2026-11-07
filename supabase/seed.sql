@@ -2,6 +2,7 @@
 --
 --   owner@dormdee.test   / dormdee-local-1234   (เจ้าของหอ)
 --   tenant@dormdee.test  / dormdee-local-1234   (ผู้เช่า)
+--   admin@dormdee.test   / dormdee-local-1234   (ผู้ดูแลระบบ)
 --
 -- Re-running is safe: existing accounts are left alone.
 
@@ -14,7 +15,8 @@ begin
   for account in
     select * from (values
       ('11111111-1111-4111-8111-111111111111'::uuid, 'owner@dormdee.test', 'เจ้าของหอทดสอบ', 'owner'),
-      ('22222222-2222-4222-8222-222222222222'::uuid, 'tenant@dormdee.test', 'ผู้เช่าทดสอบ', 'tenant')
+      ('22222222-2222-4222-8222-222222222222'::uuid, 'tenant@dormdee.test', 'ผู้เช่าทดสอบ', 'tenant'),
+      ('33333333-3333-4333-8333-333333333333'::uuid, 'admin@dormdee.test', 'ผู้ดูแลระบบ', 'tenant')
     ) as t(id, email, display_name, role)
   loop
     if not exists (select 1 from auth.users where email = account.email) then
@@ -37,6 +39,8 @@ begin
       );
     end if;
   end loop;
+  -- Sign-up never grants admin; promote the local admin account here.
+  update public.profiles set role = 'admin' where id = '33333333-3333-4333-8333-333333333333';
 end $$;
 
 -- ---------------------------------------------------------------------------

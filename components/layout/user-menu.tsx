@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { RiBuilding2Line, RiLogoutBoxRLine, RiUser3Line } from "@remixicon/react";
+import { RiAdminLine, RiBuilding2Line, RiLogoutBoxRLine, RiShieldCheckLine, RiUser3Line } from "@remixicon/react";
 import { Avatar } from "@/components/base/avatar/avatar";
 import { Badge } from "@/components/base/badges/badge";
 import {
@@ -46,6 +46,18 @@ export function UserMenu({ name, role, avatarUrl }: UserMenuProps) {
             <Link href="/owner" className={cx(MENU_ITEM, MENU_ITEM_INTERACTIVE)}>
               <RiBuilding2Line className="size-5 text-foreground-icon-secondary" aria-hidden />
               หอพักของฉัน
+            </Link>
+          ) : null}
+          {isOwner ? (
+            <Link href="/owner/verify" className={cx(MENU_ITEM, MENU_ITEM_INTERACTIVE)}>
+              <RiShieldCheckLine className="size-5 text-foreground-icon-secondary" aria-hidden />
+              ยืนยันตัวตนเจ้าของหอ
+            </Link>
+          ) : null}
+          {role === "admin" ? (
+            <Link href="/admin" className={cx(MENU_ITEM, MENU_ITEM_INTERACTIVE)}>
+              <RiAdminLine className="size-5 text-foreground-icon-secondary" aria-hidden />
+              ผู้ดูแลระบบ
             </Link>
           ) : null}
           <Link href="/account" className={cx(MENU_ITEM, MENU_ITEM_INTERACTIVE)}>

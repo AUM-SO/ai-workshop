@@ -37,7 +37,6 @@ const FEATURES: Feature[] = [
     icon: RiNotification3Line,
     title: "แจ้งเตือนเมื่อห้องว่าง",
     description: "กดติดตามห้องที่ชอบ แล้วรับแจ้งเตือนทันทีที่มีห้องว่าง",
-    comingSoon: true,
   },
   {
     icon: RiRouteLine,

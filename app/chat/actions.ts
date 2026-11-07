@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import { z } from "zod";
 import { requireProfile } from "@/lib/auth";
 import { isUuid } from "@/lib/dorms/owner-ids";
 import { dormTag, DORMS_TAG } from "@/lib/dorms/public";
 import type { FormState } from "@/lib/dorms/schemas";
+import { flushLineNotifications } from "@/lib/line";
 import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
 
@@ -67,6 +69,7 @@ export async function sendMessage(conversationId: string, body: string): Promise
   });
   if (error) return { error: "ส่งข้อความไม่สำเร็จ ลองใหม่อีกครั้ง" };
   revalidatePath("/chat");
+  after(flushLineNotifications);
   return { ok: true };
 }
 
@@ -104,6 +107,7 @@ export async function requestBooking(conversationId: string, _prev: FormState, f
       error: errorMessage(error.message, "ส่งคำขอจองไม่สำเร็จ ลองใหม่อีกครั้ง"),
     };
   revalidatePath(`/chat/${conversationId}`);
+  after(flushLineNotifications);
   return { ok: true };
 }
 
@@ -129,6 +133,7 @@ export async function respondBooking(bookingId: string, action: "hold" | "confir
     revalidatePath(`/owner/dorms/${booking.dorm_id}`, "layout");
     revalidatePath(`/chat/${booking.conversation_id}`);
   }
+  after(flushLineNotifications);
   return { ok: true };
 }
 
@@ -148,6 +153,7 @@ export async function cancelBooking(bookingId: string): Promise<FormState> {
     updateTag(DORMS_TAG);
     revalidatePath(`/chat/${booking.conversation_id}`);
   }
+  after(flushLineNotifications);
   return { ok: true };
 }
 
