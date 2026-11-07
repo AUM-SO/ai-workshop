@@ -24,7 +24,7 @@ export function ResultsToolbar({ filters, total }: { filters: SearchFilters; tot
             selectedKey={filters.sort}
             onSelectionChange={(key) => router.push(searchHref({ ...filters, sort: key as SortKey, page: 1 }))}
           >
-            {(Object.keys(SORTS) as SortKey[]).map((key) => (
+            {(Object.keys(SORTS) as SortKey[]).filter((key) => key !== "distance" || filters.to).map((key) => (
               <SelectItem key={key} id={key} textValue={SORTS[key]}>
                 {SORTS[key]}
               </SelectItem>

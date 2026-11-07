@@ -1,5 +1,6 @@
 // Search URL parameters: parsing, defaults and links. Safe to import in client components.
 
+import { MINUTES, MODES, placeByKey, type CommuteMode, type PlaceKey } from "./commute";
 import { AMENITY_KEYS, PROVINCES, type AmenityKey, type GenderPolicy } from "./options";
 
 export const SORTS = {
@@ -7,6 +8,7 @@ export const SORTS = {
   price_asc: "ราคาต่ำไปสูง",
   price_desc: "ราคาสูงไปต่ำ",
   vacant: "ห้องว่างมากที่สุด",
+  distance: "ใกล้จุดหมายที่สุด",
 } as const;
 export type SortKey = keyof typeof SORTS;
 
@@ -24,6 +26,10 @@ export interface SearchFilters {
   sort: SortKey;
   page: number;
   view: "list" | "map";
+  /** Commute search destination, travel mode and time budget. */
+  to: PlaceKey | null;
+  mode: CommuteMode;
+  mins: number;
 }
 
 type Raw = Record<string, string | string[] | undefined>;
@@ -40,7 +46,12 @@ export function parseFilters(raw: Raw): SearchFilters {
   const amenityValues = (Array.isArray(raw.amenities) ? raw.amenities : one(raw.amenities).split(","))
     .map((a) => a.trim())
     .filter((a): a is AmenityKey => (AMENITY_KEYS as string[]).includes(a));
-  const sort = one(raw.sort);
+  const to = placeByKey(one(raw.to))?.key ?? null;
+  const mode = one(raw.mode);
+  const mins = Number(one(raw.mins));
+  const sortRaw = one(raw.sort);
+  // Distance only makes sense with a destination; a destination defaults to nearest first.
+  const sort = sortRaw === "distance" && !to ? "relevance" : sortRaw || (to ? "distance" : "relevance");
   return {
     q: one(raw.q).trim().slice(0, 100),
     province: (PROVINCES as readonly string[]).includes(province) ? province : null,
@@ -52,6 +63,9 @@ export function parseFilters(raw: Raw): SearchFilters {
     sort: sort in SORTS ? (sort as SortKey) : "relevance",
     page: Math.max(1, Math.min(500, Number.parseInt(one(raw.page), 10) || 1)),
     view: one(raw.view) === "map" ? "map" : "list",
+    to,
+    mode: mode in MODES ? (mode as CommuteMode) : "transit",
+    mins: (MINUTES as readonly number[]).includes(mins) ? mins : 30,
   };
 }
 
@@ -65,7 +79,12 @@ export function searchHref(filters: Partial<SearchFilters>) {
   if (filters.max) params.set("max", String(filters.max));
   if (filters.amenities?.length) params.set("amenities", filters.amenities.join(","));
   if (filters.vacant) params.set("vacant", "1");
-  if (filters.sort && filters.sort !== "relevance") params.set("sort", filters.sort);
+  if (filters.to) {
+    params.set("to", filters.to);
+    if (filters.mode && filters.mode !== "transit") params.set("mode", filters.mode);
+    if (filters.mins && filters.mins !== 30) params.set("mins", String(filters.mins));
+  }
+  if (filters.sort && filters.sort !== (filters.to ? "distance" : "relevance")) params.set("sort", filters.sort);
   if (filters.view === "map") params.set("view", "map");
   if (filters.page && filters.page > 1) params.set("page", String(filters.page));
   const query = params.toString();

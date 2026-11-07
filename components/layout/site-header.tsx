@@ -21,6 +21,9 @@ export function SiteHeader() {
           <ButtonLink href="/search" variant="ghost" size="small">
             ค้นหาหอพัก
           </ButtonLink>
+          <ButtonLink href="/roommates" variant="ghost" size="small">
+            หาเพื่อนร่วมห้อง
+          </ButtonLink>
           {/* Explains the owner offer first; signed-in owners reach /owner from the account menu. */}
           <ButtonLink href="/?for=owner#owners" variant="ghost" size="small">
             สำหรับเจ้าของหอ

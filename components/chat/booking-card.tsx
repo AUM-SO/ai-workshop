@@ -7,6 +7,7 @@ import { Chip, type ChipColor } from "@/components/base/badges/chip";
 import { Select, SelectItem } from "@/components/base/select/select";
 import { cancelBooking, respondBooking } from "@/app/chat/actions";
 import type { Database } from "@/lib/supabase/database.types";
+import { DepositPanel } from "./deposit-panel";
 
 type Booking = Omit<Database["public"]["Tables"]["bookings"]["Row"], "booking_label">;
 type BookingStatus = Database["public"]["Enums"]["booking_status"];
@@ -39,9 +40,12 @@ interface BookingCardProps {
   roomNo?: string;
   /** Vacant rooms of the requested type (owner only), plus the one already held. */
   rooms: { id: string; room_no: string }[];
+  /** Dorm PromptPay id and the room type deposit; shows the deposit step when set. */
+  promptpayId?: string | null;
+  deposit?: number;
 }
 
-export function BookingCard({ booking, role, roomTypeName, roomNo, rooms }: BookingCardProps) {
+export function BookingCard({ booking, role, roomTypeName, roomNo, rooms, promptpayId, deposit }: BookingCardProps) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [roomId, setRoomId] = useState<string | undefined>(booking.room_id ?? rooms[0]?.id);
@@ -138,6 +142,18 @@ export function BookingCard({ booking, role, roomTypeName, roomNo, rooms }: Book
             </Button>
           </div>
         </div>
+      ) : null}
+
+      {(booking.status === "held" || booking.status === "confirmed") && promptpayId && (deposit ?? 0) > 0 ? (
+        <DepositPanel
+          bookingId={booking.id}
+          role={role}
+          tenantId={booking.tenant_id}
+          promptpayId={promptpayId}
+          amount={booking.deposit_amount ?? deposit ?? 0}
+          submittedAt={booking.deposit_submitted_at}
+          confirmedAt={booking.deposit_confirmed_at}
+        />
       ) : null}
 
       {open && role === "tenant" ? (

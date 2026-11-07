@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { RiArrowLeftSLine, RiArrowRightSLine, RiSearchEyeLine } from "@remixicon/react";
 import { ButtonLink } from "@/components/base/buttons/button";
 import { DormResultCard } from "@/components/search/dorm-result-card";
+import type { CommuteMode } from "@/lib/dorms/commute";
 import { ResultsToolbar } from "@/components/search/results-toolbar";
 import { SearchFilters } from "@/components/search/search-filters";
 import { SearchMap } from "@/components/search/search-map";
@@ -47,13 +48,13 @@ async function SearchContent({ searchParams }: PageProps<"/search">) {
       ) : results.length === 0 ? (
         <EmptyState filters={filters} />
       ) : filters.view === "map" ? (
-        <MapView results={results} />
+        <MapView results={results} mode={filters.to ? filters.mode : null} />
       ) : (
         <>
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {results.map((dorm, index) => (
               <li key={dorm.id}>
-                <DormResultCard dorm={dorm} priority={index < 3} />
+                <DormResultCard dorm={dorm} priority={index < 3} mode={filters.to ? filters.mode : null} />
               </li>
             ))}
           </ul>
@@ -64,7 +65,7 @@ async function SearchContent({ searchParams }: PageProps<"/search">) {
   );
 }
 
-function MapView({ results }: { results: Awaited<ReturnType<typeof searchDorms>>["results"] }) {
+function MapView({ results, mode }: { results: Awaited<ReturnType<typeof searchDorms>>["results"]; mode: CommuteMode | null }) {
   const pinned = results.filter((d) => d.lat != null && d.lng != null);
   const unpinned = results.length - pinned.length;
   return (
@@ -88,7 +89,7 @@ function MapView({ results }: { results: Awaited<ReturnType<typeof searchDorms>>
         <ul className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((dorm) => (
             <li key={dorm.id}>
-              <DormResultCard dorm={dorm} />
+              <DormResultCard dorm={dorm} mode={mode} />
             </li>
           ))}
         </ul>

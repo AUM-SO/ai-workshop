@@ -9,6 +9,7 @@ import { NumberField } from "@/components/base/number-field/number-field";
 import { SearchField } from "@/components/base/search-field/search-field";
 import { Select, SelectItem } from "@/components/base/select/select";
 import { Switch } from "@/components/base/switch/switch";
+import { MINUTES, MODES, PLACES, type CommuteMode } from "@/lib/dorms/commute";
 import { AMENITIES, GENDER_POLICY_LABEL, PROVINCES, type GenderPolicy } from "@/lib/dorms/options";
 import type { SearchFilters as Filters } from "@/lib/dorms/search-params";
 
@@ -66,6 +67,34 @@ export function SearchFilters({ filters }: { filters: Filters }) {
           มีห้องว่างเท่านั้น
         </Switch>
       </div>
+
+      <fieldset className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr]">
+        <legend className="mb-2 text-body-medium text-text-secondary">เดินทางไปที่เรียน / ที่ทำงาน</legend>
+        <Select name="to" aria-label="จุดหมาย" defaultSelectedKey={filters.to ?? "none"} triggerClassName="w-full">
+          <SelectItem id="none" textValue="ไม่ระบุจุดหมาย">
+            ไม่ระบุจุดหมาย
+          </SelectItem>
+          {PLACES.map((p) => (
+            <SelectItem key={p.key} id={p.key} textValue={p.label}>
+              {p.label}
+            </SelectItem>
+          ))}
+        </Select>
+        <Select name="mode" aria-label="วิธีเดินทาง" defaultSelectedKey={filters.mode} triggerClassName="w-full">
+          {(Object.keys(MODES) as CommuteMode[]).map((m) => (
+            <SelectItem key={m} id={m} textValue={MODES[m].label}>
+              {MODES[m].label}
+            </SelectItem>
+          ))}
+        </Select>
+        <Select name="mins" aria-label="ใช้เวลาไม่เกิน" defaultSelectedKey={String(filters.mins)} triggerClassName="w-full">
+          {MINUTES.map((m) => (
+            <SelectItem key={m} id={String(m)} textValue={`ไม่เกิน ${m} นาที`}>
+              ไม่เกิน {m} นาที
+            </SelectItem>
+          ))}
+        </Select>
+      </fieldset>
 
       <Accordion variant="separated" defaultExpandedKeys={extraCount ? ["more"] : []}>
         <AccordionItem

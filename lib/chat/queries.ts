@@ -50,7 +50,7 @@ export async function getThread(conversationId: string, userId: string) {
   if (!conversation) return null;
 
   const [dorm, messages, bookings, roomTypes, profiles] = await Promise.all([
-    supabase.from("dorms").select("id, name, cover_url, status").eq("id", conversation.dorm_id).maybeSingle(),
+    supabase.from("dorms").select("id, name, cover_url, status, promptpay_id").eq("id", conversation.dorm_id).maybeSingle(),
     supabase.from("messages").select("*").eq("conversation_id", conversation.id).order("created_at").limit(300),
     supabase.from("bookings").select("*").eq("conversation_id", conversation.id).order("created_at"),
     supabase.from("room_types").select("*").eq("dorm_id", conversation.dorm_id).order("monthly_price"),

@@ -14,6 +14,8 @@ export function DormNav({ dormId }: { dormId: string }) {
     { href: `${base}/photos`, label: "รูปภาพ" },
     { href: `${base}/room-types`, label: "ประเภทห้อง" },
     { href: `${base}/rooms`, label: "ผังห้อง" },
+    { href: `${base}/settings`, label: "การรับจอง" },
+    { href: `${base}/insights`, label: "สถิติ" },
   ];
 
   return (
