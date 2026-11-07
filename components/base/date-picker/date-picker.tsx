@@ -100,6 +100,7 @@ export function DatePicker({
   // external trigger (`triggerRef`), which never runs `openChange` below.
   useEffect(() => {
     if (isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- BoardUI source: resync once per open
       setPendingValue(committedValue);
       setOpenKey((k) => k + 1);
     }

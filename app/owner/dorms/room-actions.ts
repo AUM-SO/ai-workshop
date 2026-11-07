@@ -1,5 +1,7 @@
 "use server";
 
+import { after } from "next/server";
+import { flushLineNotifications } from "@/lib/line";
 import { refreshDorm } from "@/lib/dorms/refresh";
 import { getOwnedDorm, isUuid } from "@/lib/dorms/owner";
 import { ROOM_STATUSES, type RoomStatus } from "@/lib/dorms/options";
@@ -74,6 +76,8 @@ export async function setRoomStatus(dormId: string, roomId: string, status: Room
   if (error) return { error: "เปลี่ยนสถานะไม่สำเร็จ ลองใหม่อีกครั้ง" };
 
   revalidate(dorm.id);
+  // A room turning vacant notifies waitlisted tenants; relay that to LINE too.
+  after(flushLineNotifications);
   return { ok: true };
 }
 

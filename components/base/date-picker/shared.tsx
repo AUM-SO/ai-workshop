@@ -278,6 +278,7 @@ export function DateChipInput({
   const [text, setText] = useState(formatted);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- BoardUI source: mirror the committed date into the editable text
     setText(formatted);
   }, [formatted]);
 

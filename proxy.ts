@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { supabaseEnv } from "@/lib/supabase/env";
 
 // Paths that need a signed-in user. Role checks happen in the pages themselves.
-const PROTECTED = ["/account", "/owner", "/chat"];
+const PROTECTED = ["/account", "/owner", "/chat", "/admin"];
 
 /** Refreshes the Supabase session cookie on every request and guards private pages. */
 export async function proxy(request: NextRequest) {

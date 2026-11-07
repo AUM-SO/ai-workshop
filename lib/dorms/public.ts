@@ -32,12 +32,22 @@ export async function getPublicDorm(dormId: string) {
   const { data: dorm } = await supabase.from("dorms").select("*").eq("id", dormId).eq("status", "published").maybeSingle();
   if (!dorm) return null;
 
-  const [photos, types, rooms, owner] = await Promise.all([
+  const [photos, types, rooms, owner, reviewRows] = await Promise.all([
     supabase.from("dorm_photos").select("id, url").eq("dorm_id", dorm.id).order("sort_order"),
     supabase.from("room_types").select("*").eq("dorm_id", dorm.id).order("monthly_price"),
     supabase.from("rooms").select("id, room_no, floor, status, room_type_id").eq("dorm_id", dorm.id),
     supabase.from("profiles").select("display_name, verified_at, created_at").eq("id", dorm.owner_id).maybeSingle(),
+    supabase.from("reviews").select("id, rating, body, created_at, tenant_id").eq("dorm_id", dorm.id).order("created_at", { ascending: false }),
   ]);
+
+  const reviewList = reviewRows.data ?? [];
+  const reviewerIds = [...new Set(reviewList.map((r) => r.tenant_id))];
+  const { data: reviewers } = reviewerIds.length
+    ? await supabase.from("profiles").select("id, display_name").in("id", reviewerIds)
+    : { data: [] };
+  const reviewerName = new Map((reviewers ?? []).map((p) => [p.id, p.display_name]));
+  const reviews = reviewList.map((r) => ({ ...r, tenantName: reviewerName.get(r.tenant_id) ?? "ผู้เช่า" }));
+  const rating = reviews.length ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length : null;
 
   const roomList = (rooms.data ?? []) as PublicRoom[];
   const roomTypes = (types.data ?? []).map((type) => ({
@@ -55,6 +65,8 @@ export async function getPublicDorm(dormId: string) {
     roomTypes,
     rooms: roomList,
     owner: owner.data,
+    reviews,
+    rating,
   };
 }
 

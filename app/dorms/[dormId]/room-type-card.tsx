@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { Chip } from "@/components/base/badges/chip";
 import { StartChatButton } from "@/components/chat/start-chat-button";
 import { baht, fixedMonthly, moveInTotal, type OtherFee } from "@/lib/dorms/costs";
 import { FURNITURE } from "@/lib/dorms/options";
+import { WatchSlot } from "./trust-slots";
 
 const furnitureLabel = new Map<string, string>(FURNITURE.map((f) => [f.key, f.label]));
 
@@ -87,7 +89,11 @@ export function RoomTypeCard({ dormId, type, vacant }: { dormId: string; type: R
         <StartChatButton dormId={dormId} roomTypeId={type.id} variant="secondary">
           ขอจองห้องแบบนี้
         </StartChatButton>
-      ) : null}
+      ) : (
+        <Suspense fallback={null}>
+          <WatchSlot dormId={dormId} roomTypeId={type.id} />
+        </Suspense>
+      )}
     </article>
   );
 }
