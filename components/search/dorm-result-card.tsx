@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { RiImageLine, RiMapPin2Line } from "@remixicon/react";
+import { RiImageLine, RiMapPin2Line, RiTimeLine } from "@remixicon/react";
 import { Chip } from "@/components/base/badges/chip";
+import { estimateMinutes, MODES, type CommuteMode } from "@/lib/dorms/commute";
 import { baht } from "@/lib/dorms/costs";
 import { GENDER_POLICY_LABEL } from "@/lib/dorms/options";
 import type { SearchResult } from "@/lib/dorms/search";
 
-export function DormResultCard({ dorm, priority = false }: { dorm: SearchResult; priority?: boolean }) {
+interface DormResultCardProps {
+  dorm: SearchResult;
+  priority?: boolean;
+  /** Travel mode of a commute search; shows the estimated travel time. */
+  mode?: CommuteMode | null;
+}
+
+export function DormResultCard({ dorm, priority = false, mode = null }: DormResultCardProps) {
   const place = [dorm.district, dorm.province].filter(Boolean).join(", ");
   const price =
     dorm.min_price == null
@@ -51,6 +59,12 @@ export function DormResultCard({ dorm, priority = false }: { dorm: SearchResult;
           <p className="flex items-center gap-1 text-caption-1-regular text-text-tertiary">
             <RiMapPin2Line className="size-3.5 shrink-0" aria-hidden />
             {place}
+          </p>
+        ) : null}
+        {mode && dorm.distance_km != null ? (
+          <p className="flex items-center gap-1 text-caption-1-medium text-text-primary">
+            <RiTimeLine className="size-3.5 shrink-0" aria-hidden />
+            ประมาณ {estimateMinutes(dorm.distance_km, mode)} นาที ({MODES[mode].label}) · {dorm.distance_km.toFixed(1)} กม.
           </p>
         ) : null}
         {dorm.nearby.length ? (

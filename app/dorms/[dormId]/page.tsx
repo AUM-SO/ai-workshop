@@ -15,6 +15,7 @@ import { ChatUnavailableNotice, StartChatButton } from "@/components/chat/start-
 import { LocationMap } from "@/components/dorm/location-map";
 import { MoveInCostCalculator } from "@/components/dorm/move-in-cost-calculator";
 import { Stars } from "@/components/dorm/stars";
+import { ViewTracker } from "@/components/dorm/view-tracker";
 import { LiveRoomMap } from "@/components/dorm/live-room-map";
 import { baht } from "@/lib/dorms/costs";
 import { AMENITIES, GENDER_POLICY_LABEL } from "@/lib/dorms/options";
@@ -89,6 +90,7 @@ function DormView({ data, searchParams }: { data: PublicDorm; searchParams: Page
 
   return (
     <>
+      <ViewTracker dormId={dorm.id} />
       <Breadcrumb aria-label="ตำแหน่งหน้า">
         <BreadcrumbItem href="/search">ค้นหาหอพัก</BreadcrumbItem>
         {dorm.province ? (

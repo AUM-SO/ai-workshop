@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { createAnonClient } from "@/lib/supabase/anon";
+import { maxKmFor, placeByKey } from "./commute";
 import { DORMS_TAG } from "./public";
 import { MAP_PAGE_SIZE, PAGE_SIZE, type SearchFilters } from "./search-params";
 
@@ -10,6 +11,7 @@ export async function searchDorms(filters: SearchFilters) {
   cacheLife("minutes");
 
   const pageSize = filters.view === "map" ? MAP_PAGE_SIZE : PAGE_SIZE;
+  const place = filters.to ? placeByKey(filters.to) : null;
   const { data, error } = await createAnonClient().rpc("search_dorms", {
     q: filters.q || undefined,
     province_filter: filters.province ?? undefined,
@@ -21,6 +23,9 @@ export async function searchDorms(filters: SearchFilters) {
     sort: filters.sort,
     page_size: pageSize,
     page_offset: (filters.page - 1) * pageSize,
+    near_lat: place?.lat,
+    near_lng: place?.lng,
+    max_km: place ? maxKmFor(filters.mode, filters.mins) : undefined,
   });
   if (error) return { results: [], total: 0, pageSize, failed: true };
   return { results: data ?? [], total: Number(data?.[0]?.total_count ?? 0), pageSize, failed: false };

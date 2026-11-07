@@ -8,6 +8,7 @@ import { requireProfile } from "@/lib/auth";
 import { isUuid } from "@/lib/dorms/owner-ids";
 import { dormTag, DORMS_TAG } from "@/lib/dorms/public";
 import type { FormState } from "@/lib/dorms/schemas";
+import { maybeAutoReply } from "@/lib/chat/ai-reply";
 import { flushLineNotifications } from "@/lib/line";
 import { createClient } from "@/lib/supabase/server";
 import { updateTag } from "next/cache";
@@ -69,7 +70,10 @@ export async function sendMessage(conversationId: string, body: string): Promise
   });
   if (error) return { error: "ส่งข้อความไม่สำเร็จ ลองใหม่อีกครั้ง" };
   revalidatePath("/chat");
-  after(flushLineNotifications);
+  after(async () => {
+    await maybeAutoReply(conversationId);
+    await flushLineNotifications();
+  });
   return { ok: true };
 }
 
@@ -171,4 +175,43 @@ export async function markAllNotificationsRead() {
   const profile = await requireProfile("/");
   const supabase = await createClient();
   await supabase.from("notifications").update({ read_at: new Date().toISOString() }).eq("user_id", profile.id).is("read_at", null);
+}
+
+const DEPOSIT_ERRORS: Record<string, string> = {
+  booking_not_ready_for_deposit: "แนบสลิปได้หลังเจ้าของหอกันห้องหรือยืนยันการจองแล้ว",
+  deposit_already_confirmed: "เจ้าของหอยืนยันเงินมัดจำไปแล้ว",
+  no_deposit_slip: "ผู้เช่ายังไม่ได้แนบสลิป",
+  bad_slip_path: "ไฟล์สลิปไม่ถูกต้อง",
+};
+
+const depositError = (message: string) =>
+  DEPOSIT_ERRORS[Object.keys(DEPOSIT_ERRORS).find((key) => message.includes(key)) ?? ""] ?? "ทำรายการไม่สำเร็จ ลองใหม่อีกครั้ง";
+
+/** Records the slip the tenant uploaded to deposit-slips/{tenant}/{booking}/. */
+export async function submitDepositSlip(bookingId: string, slipPath: string): Promise<{ error?: string }> {
+  await requireProfile("/chat");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("submit_deposit_slip", { target_booking_id: bookingId, slip_path: slipPath });
+  if (error) return { error: depositError(error.message) };
+  after(flushLineNotifications);
+  return {};
+}
+
+export async function confirmDeposit(bookingId: string): Promise<{ error?: string }> {
+  await requireProfile("/chat");
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("confirm_deposit", { target_booking_id: bookingId });
+  if (error) return { error: depositError(error.message) };
+  after(flushLineNotifications);
+  return {};
+}
+
+/** Short-lived link to a booking's slip, for the tenant or the owner. */
+export async function depositSlipUrl(bookingId: string): Promise<{ url?: string; error?: string }> {
+  await requireProfile("/chat");
+  const supabase = await createClient();
+  const { data: booking } = await supabase.from("bookings").select("deposit_slip_path").eq("id", bookingId).maybeSingle();
+  if (!booking?.deposit_slip_path) return { error: "ไม่พบสลิป" };
+  const { data } = await supabase.storage.from("deposit-slips").createSignedUrl(booking.deposit_slip_path, 600);
+  return data ? { url: data.signedUrl } : { error: "เปิดสลิปไม่สำเร็จ" };
 }

@@ -25,14 +25,14 @@ export type Database = {
           Tables: {
             "bookings": {
                   Row: {
-                    "conversation_id": string,"created_at": string,"dorm_id": string,"held_until": string | null,"id": string,"months": number,"move_in_date": string,"note": string | null,"owner_id": string,"room_id": string | null,"room_type_id": string,"status": Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at": string,"booking_label": string | null
+                    "conversation_id": string,"created_at": string,"deposit_amount": number | null,"deposit_confirmed_at": string | null,"deposit_slip_path": string | null,"deposit_submitted_at": string | null,"dorm_id": string,"held_until": string | null,"id": string,"months": number,"move_in_date": string,"note": string | null,"owner_id": string,"room_id": string | null,"room_type_id": string,"status": Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at": string,"booking_label": string | null
                   }
                   ComputedFields: "booking_label"
                   Insert: {
-                    "conversation_id": string,"created_at"?: string,"dorm_id": string,"held_until"?: string | null,"id"?: string,"months": number,"move_in_date": string,"note"?: string | null,"owner_id": string,"room_id"?: string | null,"room_type_id": string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at"?: string
+                    "conversation_id": string,"created_at"?: string,"deposit_amount"?: number | null,"deposit_confirmed_at"?: string | null,"deposit_slip_path"?: string | null,"deposit_submitted_at"?: string | null,"dorm_id": string,"held_until"?: string | null,"id"?: string,"months": number,"move_in_date": string,"note"?: string | null,"owner_id": string,"room_id"?: string | null,"room_type_id": string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at"?: string
                   }
                   Update: {
-                    "conversation_id"?: string,"created_at"?: string,"dorm_id"?: string,"held_until"?: string | null,"id"?: string,"months"?: number,"move_in_date"?: string,"note"?: string | null,"owner_id"?: string,"room_id"?: string | null,"room_type_id"?: string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id"?: string,"updated_at"?: string
+                    "conversation_id"?: string,"created_at"?: string,"deposit_amount"?: number | null,"deposit_confirmed_at"?: string | null,"deposit_slip_path"?: string | null,"deposit_submitted_at"?: string | null,"dorm_id"?: string,"held_until"?: string | null,"id"?: string,"months"?: number,"move_in_date"?: string,"note"?: string | null,"owner_id"?: string,"room_id"?: string | null,"room_type_id"?: string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -125,16 +125,36 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"dorms": {
+                },"dorm_view_counts": {
                   Row: {
-                    "address": string | null,"amenities": (string)[],"cover_url": string | null,"created_at": string,"description": string | null,"district": string | null,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number | null,"lng": number | null,"name": string,"nearby": (string)[],"owner_id": string,"province": string | null,"rules": string | null,"status": Database["public"]['Enums']["dorm_status"],"updated_at": string
+                    "day": string,"dorm_id": string,"views": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"nearby"?: (string)[],"owner_id": string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
+                    "day"?: string,"dorm_id": string,"views"?: number
                   }
                   Update: {
-                    "address"?: string | null,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"nearby"?: (string)[],"owner_id"?: string,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
+                    "day"?: string,"dorm_id"?: string,"views"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "dorm_view_counts_dorm_id_fkey"
+      columns: ["dorm_id"]
+isOneToOne: false
+      referencedRelation: "dorms"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"dorms": {
+                  Row: {
+                    "address": string | null,"ai_reply_enabled": boolean,"amenities": (string)[],"cover_url": string | null,"created_at": string,"description": string | null,"district": string | null,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number | null,"lng": number | null,"name": string,"nearby": (string)[],"owner_id": string,"promptpay_id": string | null,"province": string | null,"rules": string | null,"status": Database["public"]['Enums']["dorm_status"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address"?: string | null,"ai_reply_enabled"?: boolean,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"nearby"?: (string)[],"owner_id": string,"promptpay_id"?: string | null,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
+                  }
+                  Update: {
+                    "address"?: string | null,"ai_reply_enabled"?: boolean,"amenities"?: (string)[],"cover_url"?: string | null,"created_at"?: string,"description"?: string | null,"district"?: string | null,"gender_policy"?: Database["public"]['Enums']["gender_policy"],"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"nearby"?: (string)[],"owner_id"?: string,"promptpay_id"?: string | null,"province"?: string | null,"rules"?: string | null,"status"?: Database["public"]['Enums']["dorm_status"],"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -355,6 +375,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"roommate_profiles": {
+                  Row: {
+                    "active": boolean,"bio": string | null,"budget_max": number,"cleanliness": number,"contact": string | null,"gender": string,"guests": string,"pets": boolean,"prefer_same_gender": boolean,"province": string,"sleep": string,"smoking": boolean,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"bio"?: string | null,"budget_max": number,"cleanliness": number,"contact"?: string | null,"gender": string,"guests": string,"pets"?: boolean,"prefer_same_gender"?: boolean,"province": string,"sleep": string,"smoking"?: boolean,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "active"?: boolean,"bio"?: string | null,"budget_max"?: number,"cleanliness"?: number,"contact"?: string | null,"gender"?: string,"guests"?: string,"pets"?: boolean,"prefer_same_gender"?: boolean,"province"?: string,"sleep"?: string,"smoking"?: boolean,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "roommate_profiles_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"rooms": {
                   Row: {
                     "created_at": string,"dorm_id": string,"floor": number,"held_until": string | null,"id": string,"room_no": string,"room_type_id": string,"status": Database["public"]['Enums']["room_status"],"updated_at": string
@@ -393,8 +433,14 @@ isOneToOne: false
 "cancel_booking":
 { Args: { "target_booking_id": string }; Returns: undefined
                            },
+"confirm_deposit":
+{ Args: { "target_booking_id": string }; Returns: undefined
+                           },
 "create_line_link_code":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"distance_km":
+{ Args: { "lat1": number,"lat2": number,"lng1": number,"lng2": number }; Returns: number
                            },
 "dorm_is_published":
 { Args: { "target_dorm_id": string }; Returns: boolean
@@ -411,11 +457,19 @@ isOneToOne: false
 "is_participant":
 { Args: { "target_conversation_id": string }; Returns: boolean
                            },
+"nearby_price_stats":
+{ Args: { "radius_km"?: number,"target_dorm_id": string }; Returns: {
+              "avg_min_price": number,"dorm_count": number,"max_min_price": number,"min_min_price": number
+            }[]
+                           },
 "notify":
 { Args: { "body": string,"kind": string,"link": string,"target": string,"title": string }; Returns: undefined
                            },
 "owns_dorm":
 { Args: { "target_dorm_id": string }; Returns: boolean
+                           },
+"record_dorm_view":
+{ Args: { "target_dorm_id": string }; Returns: undefined
                            },
 "request_booking":
 { Args: { "target_conversation_id": string,"target_months": number,"target_move_in": string,"target_note"?: string,"target_room_type_id": string }; Returns: string
@@ -427,9 +481,12 @@ isOneToOne: false
 { Args: { "approve": boolean,"message"?: string,"target_id": string }; Returns: undefined
                            },
 "search_dorms":
-{ Args: { "amenity_filter"?: (string)[],"bbox"?: (number)[],"gender_filter"?: Database["public"]['Enums']["gender_policy"],"page_offset"?: number,"page_size"?: number,"price_max"?: number,"price_min"?: number,"province_filter"?: string,"q"?: string,"sort"?: string,"vacant_only"?: boolean }; Returns: {
-              "amenities": (string)[],"cover_url": string,"district": string,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number,"lng": number,"max_price": number,"min_price": number,"name": string,"nearby": (string)[],"province": string,"total_count": number,"total_rooms": number,"updated_at": string,"vacant_rooms": number
+{ Args: { "amenity_filter"?: (string)[],"bbox"?: (number)[],"gender_filter"?: Database["public"]['Enums']["gender_policy"],"max_km"?: number,"near_lat"?: number,"near_lng"?: number,"page_offset"?: number,"page_size"?: number,"price_max"?: number,"price_min"?: number,"province_filter"?: string,"q"?: string,"sort"?: string,"vacant_only"?: boolean }; Returns: {
+              "amenities": (string)[],"cover_url": string,"distance_km": number,"district": string,"gender_policy": Database["public"]['Enums']["gender_policy"],"id": string,"lat": number,"lng": number,"max_price": number,"min_price": number,"name": string,"nearby": (string)[],"province": string,"total_count": number,"total_rooms": number,"updated_at": string,"vacant_rooms": number
             }[]
+                           },
+"submit_deposit_slip":
+{ Args: { "slip_path": string,"target_booking_id": string }; Returns: undefined
                            }
           }
           Enums: {

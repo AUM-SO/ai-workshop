@@ -192,6 +192,8 @@ export function ChatThread({ thread, userId, bookTypeId }: ChatThreadProps) {
                       booking={booking}
                       role={role}
                       roomTypeName={typeName.get(booking.room_type_id) ?? "ห้อง"}
+                      promptpayId={dorm?.promptpay_id}
+                      deposit={thread.roomTypes.find((t) => t.id === booking.room_type_id)?.deposit}
                       roomNo={booking.room_id ? roomNo.get(booking.room_id) : undefined}
                       rooms={thread.rooms
                         .filter((r) => r.room_type_id === booking.room_type_id && (r.status === "vacant" || r.id === booking.room_id))

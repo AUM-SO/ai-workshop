@@ -42,13 +42,11 @@ const FEATURES: Feature[] = [
     icon: RiRouteLine,
     title: "ค้นหาตามเวลาเดินทาง",
     description: "ใส่ที่เรียนหรือที่ทำงาน แล้วกรองหอที่เดินทางไม่เกินกี่นาที",
-    comingSoon: true,
   },
   {
     icon: RiGroupLine,
     title: "หาเพื่อนร่วมห้อง",
     description: "จับคู่รูมเมทจากไลฟ์สไตล์ เวลานอน และนิสัยการใช้ห้อง",
-    comingSoon: true,
   },
 ];
 
