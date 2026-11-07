@@ -23,7 +23,89 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "dorm_photos": {
+            "bookings": {
+                  Row: {
+                    "conversation_id": string,"created_at": string,"dorm_id": string,"held_until": string | null,"id": string,"months": number,"move_in_date": string,"note": string | null,"owner_id": string,"room_id": string | null,"room_type_id": string,"status": Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at": string,"booking_label": string | null
+                  }
+                  ComputedFields: "booking_label"
+                  Insert: {
+                    "conversation_id": string,"created_at"?: string,"dorm_id": string,"held_until"?: string | null,"id"?: string,"months": number,"move_in_date": string,"note"?: string | null,"owner_id": string,"room_id"?: string | null,"room_type_id": string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "conversation_id"?: string,"created_at"?: string,"dorm_id"?: string,"held_until"?: string | null,"id"?: string,"months"?: number,"move_in_date"?: string,"note"?: string | null,"owner_id"?: string,"room_id"?: string | null,"room_type_id"?: string,"status"?: Database["public"]['Enums']["booking_status"],"tenant_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "bookings_conversation_id_fkey"
+      columns: ["conversation_id"]
+isOneToOne: false
+      referencedRelation: "conversations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bookings_dorm_id_fkey"
+      columns: ["dorm_id"]
+isOneToOne: false
+      referencedRelation: "dorms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bookings_owner_id_fkey"
+      columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bookings_room_id_fkey"
+      columns: ["room_id"]
+isOneToOne: false
+      referencedRelation: "rooms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bookings_room_type_id_fkey"
+      columns: ["room_type_id"]
+isOneToOne: false
+      referencedRelation: "room_types"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "bookings_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"conversations": {
+                  Row: {
+                    "created_at": string,"dorm_id": string,"id": string,"last_message_at": string,"owner_id": string,"owner_last_read_at": string,"tenant_id": string,"tenant_last_read_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"dorm_id": string,"id"?: string,"last_message_at"?: string,"owner_id": string,"owner_last_read_at"?: string,"tenant_id": string,"tenant_last_read_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"dorm_id"?: string,"id"?: string,"last_message_at"?: string,"owner_id"?: string,"owner_last_read_at"?: string,"tenant_id"?: string,"tenant_last_read_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "conversations_dorm_id_fkey"
+      columns: ["dorm_id"]
+isOneToOne: false
+      referencedRelation: "dorms"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "conversations_owner_id_fkey"
+      columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "conversations_tenant_id_fkey"
+      columns: ["tenant_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"dorm_photos": {
                   Row: {
                     "created_at": string,"dorm_id": string,"id": string,"sort_order": number,"storage_path": string | null,"url": string
                   }
@@ -58,6 +140,58 @@ isOneToOne: false
                     {
       foreignKeyName: "dorms_owner_id_fkey"
       columns: ["owner_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"messages": {
+                  Row: {
+                    "body": string,"booking_id": string | null,"conversation_id": string,"created_at": string,"id": string,"kind": Database["public"]['Enums']["message_kind"],"sender_id": string | null,"via": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string,"booking_id"?: string | null,"conversation_id": string,"created_at"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["message_kind"],"sender_id"?: string | null,"via"?: string | null
+                  }
+                  Update: {
+                    "body"?: string,"booking_id"?: string | null,"conversation_id"?: string,"created_at"?: string,"id"?: string,"kind"?: Database["public"]['Enums']["message_kind"],"sender_id"?: string | null,"via"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "messages_booking_id_fkey"
+      columns: ["booking_id"]
+isOneToOne: false
+      referencedRelation: "bookings"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "messages_conversation_id_fkey"
+      columns: ["conversation_id"]
+isOneToOne: false
+      referencedRelation: "conversations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "messages_sender_id_fkey"
+      columns: ["sender_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"notifications": {
+                  Row: {
+                    "body": string | null,"created_at": string,"id": string,"kind": string,"link": string | null,"read_at": string | null,"title": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind": string,"link"?: string | null,"read_at"?: string | null,"title": string,"user_id": string
+                  }
+                  Update: {
+                    "body"?: string | null,"created_at"?: string,"id"?: string,"kind"?: string,"link"?: string | null,"read_at"?: string | null,"title"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "notifications_user_id_fkey"
+      columns: ["user_id"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -129,14 +263,35 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "dorm_is_published":
+            "booking_label":
+{ Args: { "target": Omit<Database["public"]['Tables']["bookings"]['Row'], Database["public"]['Tables']["bookings"]['ComputedFields']> }; Returns: string
+                           },
+"cancel_booking":
+{ Args: { "target_booking_id": string }; Returns: undefined
+                           },
+"dorm_is_published":
 { Args: { "target_dorm_id": string }; Returns: boolean
+                           },
+"expire_booking_holds":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "is_owner":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"is_participant":
+{ Args: { "target_conversation_id": string }; Returns: boolean
+                           },
+"notify":
+{ Args: { "body": string,"kind": string,"link": string,"target": string,"title": string }; Returns: undefined
+                           },
 "owns_dorm":
 { Args: { "target_dorm_id": string }; Returns: boolean
+                           },
+"request_booking":
+{ Args: { "target_conversation_id": string,"target_months": number,"target_move_in": string,"target_note"?: string,"target_room_type_id": string }; Returns: string
+                           },
+"respond_booking":
+{ Args: { "action": string,"hold_hours"?: number,"target_booking_id": string,"target_room_id"?: string }; Returns: undefined
                            },
 "search_dorms":
 { Args: { "amenity_filter"?: (string)[],"bbox"?: (number)[],"gender_filter"?: Database["public"]['Enums']["gender_policy"],"page_offset"?: number,"page_size"?: number,"price_max"?: number,"price_min"?: number,"province_filter"?: string,"q"?: string,"sort"?: string,"vacant_only"?: boolean }; Returns: {
@@ -145,7 +300,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "dorm_status": "draft"|"published"|"archived","gender_policy": "male"|"female"|"mixed","room_status": "vacant"|"held"|"occupied"|"maintenance","user_role": "tenant"|"owner"|"admin"
+            "booking_status": "pending"|"held"|"confirmed"|"declined"|"cancelled"|"expired","dorm_status": "draft"|"published"|"archived","gender_policy": "male"|"female"|"mixed","message_kind": "text"|"booking"|"system","room_status": "vacant"|"held"|"occupied"|"maintenance","user_role": "tenant"|"owner"|"admin"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -265,7 +420,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "dorm_status": ["draft", "published", "archived"],"gender_policy": ["male", "female", "mixed"],"room_status": ["vacant", "held", "occupied", "maintenance"],"user_role": ["tenant", "owner", "admin"]
+            "booking_status": ["pending", "held", "confirmed", "declined", "cancelled", "expired"],"dorm_status": ["draft", "published", "archived"],"gender_policy": ["male", "female", "mixed"],"message_kind": ["text", "booking", "system"],"room_status": ["vacant", "held", "occupied", "maintenance"],"user_role": ["tenant", "owner", "admin"]
           }
         }
 } as const
