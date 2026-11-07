@@ -9,8 +9,8 @@ import {
   RiUser3Line,
 } from "@remixicon/react";
 import { Breadcrumb, BreadcrumbItem } from "@/components/base/breadcrumb/breadcrumb";
-import { Button } from "@/components/base/buttons/button";
 import { Chip } from "@/components/base/badges/chip";
+import { ChatUnavailableNotice, StartChatButton } from "@/components/chat/start-chat-button";
 import { LocationMap } from "@/components/dorm/location-map";
 import { MoveInCostCalculator } from "@/components/dorm/move-in-cost-calculator";
 import { LiveRoomMap } from "@/components/dorm/live-room-map";
@@ -61,19 +61,19 @@ export default function DormPage(props: PageProps<"/dorms/[dormId]">) {
   );
 }
 
-async function DormContent({ params }: PageProps<"/dorms/[dormId]">) {
+async function DormContent({ params, searchParams }: PageProps<"/dorms/[dormId]">) {
   const { dormId } = await params;
   const data = await getPublicDorm(dormId);
   if (!data) notFound();
   return (
     <>
       <DormJsonLd data={data} />
-      <DormView data={data} />
+      <DormView data={data} searchParams={searchParams} />
     </>
   );
 }
 
-function DormView({ data }: { data: PublicDorm }) {
+function DormView({ data, searchParams }: { data: PublicDorm; searchParams: PageProps<"/dorms/[dormId]">["searchParams"] }) {
   const { dorm, photos, roomTypes, rooms, owner } = data;
   const vacantByType = new Map<string, number>();
   for (const room of rooms) {
@@ -122,7 +122,7 @@ function DormView({ data }: { data: PublicDorm }) {
           <Section id="room-types" title="ประเภทห้องและราคา">
             <div className="grid gap-4 md:grid-cols-2">
               {roomTypes.map((type) => (
-                <RoomTypeCard key={type.id} type={type} vacant={vacantByType.get(type.id) ?? 0} />
+                <RoomTypeCard key={type.id} dormId={dorm.id} type={type} vacant={vacantByType.get(type.id) ?? 0} />
               ))}
             </div>
           </Section>
@@ -208,12 +208,11 @@ function DormView({ data }: { data: PublicDorm }) {
             <p className="text-body-regular text-text-secondary">
               {vacant > 0 ? `ตอนนี้มีห้องว่าง ${vacant} ห้อง จาก ${rooms.length} ห้อง` : "ตอนนี้ห้องเต็มทุกห้อง"}
             </p>
-            <Button disabled className="w-full">
-              แชทเพื่อจอง (เร็ว ๆ นี้)
-            </Button>
-            <p className="text-caption-1-regular text-text-tertiary">
-              การจองผ่านแชทกำลังจะเปิดให้ใช้ ระหว่างนี้ดูข้อมูลห้องและค่าใช้จ่ายได้ครบในหน้านี้
-            </p>
+            <StartChatButton dormId={dorm.id}>แชทกับเจ้าของหอ</StartChatButton>
+            <Suspense fallback={null}>
+              <ChatUnavailableNotice searchParams={searchParams} />
+            </Suspense>
+            <p className="text-caption-1-regular text-text-tertiary">ถามรายละเอียด นัดดูห้อง หรือส่งคำขอจองพร้อมวันเข้าอยู่ได้ในแชท</p>
           </div>
 
           <div className="flex items-start gap-3 rounded-3xl bg-background-secondary-default p-4">

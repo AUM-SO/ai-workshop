@@ -17,7 +17,6 @@ const TIPS: {
     icon: RiAlertLine,
     title: "เตือนเมื่อมีการขอโอนนอกระบบ",
     description: "ระบบจะเตือนในแชท เมื่อมีการขอให้โอนเงินไปที่อื่น",
-    comingSoon: true,
   },
   {
     icon: RiStarLine,

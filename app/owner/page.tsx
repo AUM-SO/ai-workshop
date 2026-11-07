@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { RiAddLine, RiBuilding2Line, RiImageLine } from "@remixicon/react";
+import { RiAddLine, RiBuilding2Line, RiChat3Line, RiImageLine } from "@remixicon/react";
 import { ButtonLink } from "@/components/base/buttons/button";
 import { DormStatusChip } from "@/components/dorm/dorm-status-chip";
 import { ROOM_STATUS_LABEL, ROOM_STATUS_STYLE } from "@/components/dorm/room-grid";
@@ -53,9 +53,14 @@ async function OwnerContent() {
     <>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-title-1-semibold text-text-primary">หอพักของฉัน</h1>
-        <ButtonLink href="/owner/dorms/new" leadingIcon={RiAddLine}>
-          สร้างหอพัก
-        </ButtonLink>
+        <div className="flex flex-wrap gap-2">
+          <ButtonLink href="/chat" variant="secondary" leadingIcon={RiChat3Line}>
+            แชทและคำขอจอง
+          </ButtonLink>
+          <ButtonLink href="/owner/dorms/new" leadingIcon={RiAddLine}>
+            สร้างหอพัก
+          </ButtonLink>
+        </div>
       </div>
 
       <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="ห้องทั้งหมดของทุกหอ">
